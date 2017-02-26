@@ -17,6 +17,8 @@ namespace WSAD_Project.Controllers
             return RedirectToAction("Login");
         }
 
+
+
         /// <summary>
         /// Logging users into the website
         /// </summary>
@@ -26,6 +28,8 @@ namespace WSAD_Project.Controllers
         {
             return View();
         }
+
+
 
         /// <summary>
         /// login user to website
@@ -85,5 +89,275 @@ namespace WSAD_Project.Controllers
                 return Redirect(FormsAuthentication.GetRedirectUrl(loginUser.UserName, loginUser.RememberMe));
             }
         }
+
+
+
+        /// <summary>
+        /// create a new account for application
+        /// </summary>
+        /// <returns>ViewResult for the Create</returns>
+        [HttpGet]
+        [AllowAnonymous]
+        public ActionResult Create()
+        {
+            return View();
+        }
+
+
+
+        [HttpPost]
+        [AllowAnonymous]
+        public ActionResult Create(CreateUserViewModel newUser)
+        {
+            // Validate the New User
+            // Validate Required fields (no empties)
+            // FirstName, LastName, UserName, Email, Password
+            if (!ModelState.IsValid)
+            {
+                return View(newUser);
+            }
+
+            // Validate Password vs PasswordConfirm match
+            if (!newUser.Password.Equals(newUser.PasswordConfirm))
+            {
+                ModelState.AddModelError("", "Password and Confirm Password must match");
+                return View(newUser);
+            }
+
+            // Create instance of our DbContext
+            using (WSADDbContext context = new WSADDbContext())
+            {
+                // make sure username is unique (not already taken)
+                if (context.Users.Any(row => row.Username.Equals(newUser.UserName)))
+                {
+                    ModelState.AddModelError("", "Username '" + newUser.UserName + "' already exists. Try again.");
+                    newUser.UserName = "";
+                    return View(newUser);
+                }
+
+                #region Entity Framework example
+
+                #endregion
+
+                // Create user DTO
+                User newUserDTO = new Models.Data.User()
+                {
+                    FirstName = newUser.FirstName,
+                    LastName = newUser.LastName,
+                    EmailAddress = newUser.EmailAddress,
+                    IsActive = true,
+                    IsAdmin = false,
+                    Username = newUser.UserName,
+                    Password = newUser.Password,
+                    DateCreated = DateTime.Now,
+                    DateModified = DateTime.Now,
+                    Gender = newUser.Gender
+                };
+
+                // add to DbContext
+                newUserDTO = context.Users.Add(newUserDTO);
+
+                // Save user data to database
+                context.SaveChanges();
+            }
+
+            // Redirect to login
+            return RedirectToAction("login");
+        }
+
+
+
+        public ActionResult Logout()
+        {
+            FormsAuthentication.SignOut();
+            return RedirectToAction("Login");
+        }
+
+
+
+
+        public ActionResult UserNavPartial()
+        {
+            // Capture logged in User
+            string username = this.User.Identity.Name;
+
+            // Get User information from database
+            UserNavPartialViewModel userNavVM;
+
+            using (WSADDbContext context = new WSADDbContext())
+            {
+                // Search for user
+                Models.Data.User userDTO = context.Users.FirstOrDefault(x => x.Username == username);
+
+                if (userDTO == null) { return Content(""); }
+
+                // Build our UserNavPartialViewModel
+                userNavVM = new UserNavPartialViewModel()
+                {
+                    FirstName = userDTO.FirstName,
+                    LastName = userDTO.LastName,
+                    Id = userDTO.Id
+                };
+            }
+
+            // Send the view model to the Partial View
+            return PartialView(userNavVM);
+        }
+
+
+
+        public ActionResult UserProfile(int? id = null)
+        {
+            // Capture logged in User
+            string username = User.Identity.Name;
+
+            // Retrieve user from database
+            UserProfileViewModel profileVM;
+
+            using (WSADDbContext context = new WSADDbContext())
+            {
+                // Get user from database
+                User userDTO;
+
+                if (id.HasValue)
+                {
+                    userDTO = context.Users.Find(id.Value);
+                }
+                else
+                {
+                    userDTO = context.Users.FirstOrDefault(row => row.Username == username);
+                }
+
+                if (userDTO == null)
+                {
+                    return Content("Invalid Username");
+                }
+
+                // Populate our UserProfileViewModel
+                profileVM = new UserProfileViewModel()
+                {
+                    Id = userDTO.Id,
+                    FirstName = userDTO.FirstName,
+                    LastName = userDTO.LastName,
+                    UserName = userDTO.Username,
+                    DateCreated = userDTO.DateCreated,
+                    EmailAddress = userDTO.EmailAddress,
+                    //Gender = userDTO.Gender,
+                    IsAdmin = userDTO.IsAdmin
+                };
+            }
+
+            // Return View with ViewModel
+            return View(profileVM);
+        }
+
+
+
+        [HttpGet]
+        public ActionResult Edit(int id)
+        {
+            // Get user id
+            EditViewModel editVM;
+
+            using (WSADDbContext context = new WSADDbContext())
+            {
+                // Get user from database
+                User userDTO = context.Users.Find(id);
+
+                if (userDTO == null)
+                {
+                    return Content("Invalid Id");
+                }
+
+                // create EditViewModel
+                editVM = new EditViewModel()
+                {
+                    Id = userDTO.Id,
+                    FirstName = userDTO.FirstName,
+                    LastName = userDTO.LastName,
+                    UserName = userDTO.Username,
+                    EmailAddress = userDTO.EmailAddress,
+                    Gender = userDTO.Gender
+                };
+            }
+
+            // Send the viewModel to the View
+            return View(editVM);
+        }
+
+
+
+        [HttpPost]
+        public ActionResult Edit(EditViewModel editVM)
+        {
+            // Variables
+            bool needsPasswordReset = false;
+            bool usernameHasChanged = false;
+
+            // Validate Model
+            if (!ModelState.IsValid)
+            {
+                return View(editVM);
+            }
+
+            // Check for password change
+            if (!string.IsNullOrWhiteSpace(editVM.Password))
+            {
+                // Compare Password with PasswordConfirm
+                if (editVM.Password != editVM.PasswordConfirm)
+                {
+                    ModelState.AddModelError("", "Password and Password Confirm must match.");
+                    return View(editVM);
+                }
+                else
+                {
+                    needsPasswordReset = true;
+                }
+            }
+
+            // Get user from database
+            using (WSADDbContext context = new WSADDbContext())
+            {
+                // Get our DTO
+                User userDTO = context.Users.Find(editVM.Id);
+                if (userDTO == null) { return Content("Invalid user Id"); }
+
+                // check if username changed
+                if (userDTO.Username != editVM.UserName)
+                {
+                    userDTO.Username = editVM.UserName;
+                    usernameHasChanged = true;
+                }
+
+                // Set/Update values from ViewModel
+                userDTO.FirstName = editVM.FirstName;
+                userDTO.LastName = editVM.LastName;
+                userDTO.EmailAddress = editVM.EmailAddress;
+                userDTO.DateModified = DateTime.Now;
+
+                // check if password needs updated
+                if (needsPasswordReset)
+                {
+                    userDTO.Password = editVM.Password;
+                }
+
+                // Save Changes
+                context.SaveChanges();
+            }
+
+            if (usernameHasChanged || needsPasswordReset)
+            {
+                // does not persist when Logout redirects to Login page
+                //ViewBag.LogoutMessage = "After a username or password change. Please log in with the new credentials.";
+                TempData["LogoutMessage"] = "After a username or password change. Please log in with the new credentials.";
+                return RedirectToAction("Logout");
+            }
+            else
+            {
+                return RedirectToAction("UserProfile");
+            }
+        }
+
+
     }
 }
