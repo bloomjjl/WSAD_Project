@@ -32,5 +32,8 @@ namespace WSAD_Project.Models.Data
         public DateTime DateModified { get; set; }
 
         public string Gender { get; set; }
+
+
+        //public virtual ICollection<UserSession> UserSessions { get; set; }
     }
 }

@@ -1,0 +1,63 @@
+﻿@model IEnumerable<WSAD_Project.Models.ViewModels.ManageSession.ManageSessionViewModel>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Sessions</h2>
+
+<p>
+    @Html.ActionLink("Sign Up", "SignUp") | 
+    @Html.ActionLink("Registered", "Registered")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Title)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Description)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Address)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Room)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Time)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Occupancy)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Address)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Room)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Time)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Occupancy)
+            </td>
+            <td>
+@*                @Html.ActionLink("Details", "Details", new { id = item.Id })
+*@            </td>
+        </tr>
+    }
+
+</table>

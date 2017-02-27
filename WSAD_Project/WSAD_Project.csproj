@@ -158,16 +158,23 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\ManageSessionsController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\Data\Session.cs" />
     <Compile Include="Models\Data\User.cs" />
+    <Compile Include="Models\Data\UserSession.cs" />
     <Compile Include="Models\Data\WSADDbContext.cs" />
     <Compile Include="Models\ViewModels\Account\CreateUserViewModel.cs" />
     <Compile Include="Models\ViewModels\Account\EditViewModel.cs" />
     <Compile Include="Models\ViewModels\Account\LoginUserViewModel.cs" />
     <Compile Include="Models\ViewModels\Account\UserNavPartialViewModel.cs" />
     <Compile Include="Models\ViewModels\Account\UserProfileViewModel.cs" />
+    <Compile Include="Models\ViewModels\ManageSession\ManageSessionViewModel.cs" />
+    <Compile Include="Models\ViewModels\ManageSession\SessionRegisteredViewModel.cs" />
+    <Compile Include="Models\ViewModels\ManageSession\SessionSignUpViewModel.cs" />
+    <Compile Include="Models\ViewModels\ManageSession\SessionDetailsViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -218,6 +225,10 @@
     <Content Include="Views\Account\userAccountCreatedConfirmation.cshtml" />
     <Content Include="Views\Account\UserNavPartial.cshtml" />
     <Content Include="Views\Account\UserProfile.cshtml" />
+    <Content Include="Views\ManageSessions\Index.cshtml" />
+    <Content Include="Views\ManageSessions\SignUp.cshtml" />
+    <Content Include="Views\ManageSessions\Details.cshtml" />
+    <Content Include="Views\ManageSessions\Registered.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

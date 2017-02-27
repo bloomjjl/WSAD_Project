@@ -40,53 +40,60 @@ namespace WSAD_Project.Controllers
         [HttpPost]
         public ActionResult Login(LoginUserViewModel loginUser)
         {
-            // Validate username and password is passed (no empties)
-            if (loginUser == null)
+            try
             {
-                ModelState.AddModelError("", "Login is required");
-                return View();
-            }
-
-            if (string.IsNullOrWhiteSpace(loginUser.UserName))
-            {
-                ModelState.AddModelError("", "Username is required");
-                return View();
-            }
-
-            if (string.IsNullOrWhiteSpace(loginUser.Password))
-            {
-                ModelState.AddModelError("", "Password is required");
-                return View();
-            }
-
-            // Open database connection
-            bool isValid = false;
-            using (WSADDbContext context = new WSADDbContext())
-            {
-                // Hash password
-
-                // Query for user based on username and password hash
-                if (context.Users.Any(
-                    row => row.Username.Equals(loginUser.UserName)
-                    && row.Password.Equals(loginUser.Password)
-                    ))
+                // Validate username and password is passed (no empties)
+                if (loginUser == null)
                 {
-                    isValid = true;
+                    ModelState.AddModelError("", "Login is required");
+                    return View();
+                }
+
+                if (string.IsNullOrWhiteSpace(loginUser.UserName))
+                {
+                    ModelState.AddModelError("", "Username is required");
+                    return View();
+                }
+
+                if (string.IsNullOrWhiteSpace(loginUser.Password))
+                {
+                    ModelState.AddModelError("", "Password is required");
+                    return View();
+                }
+
+                // Open database connection
+                bool isValid = false;
+                using (WSADDbContext context = new WSADDbContext())
+                {
+                    // Hash password
+
+                    // Query for user based on username and password hash
+                    if (context.Users.Any(
+                        row => row.Username.Equals(loginUser.UserName)
+                        && row.Password.Equals(loginUser.Password)
+                        ))
+                    {
+                        isValid = true;
+                    }
+                }
+
+                // If invalid, send error
+                if (!isValid)
+                {
+                    ModelState.AddModelError("", "Invalid Username or Password");
+                    return View();
+                }
+                else
+                {
+                    // Valid, redirect to user profile
+                    System.Web.Security.FormsAuthentication.SetAuthCookie(loginUser.UserName, loginUser.RememberMe);
+
+                    return Redirect(FormsAuthentication.GetRedirectUrl(loginUser.UserName, loginUser.RememberMe));
                 }
             }
-
-            // If invalid, send error
-            if (!isValid)
+            catch
             {
-                ModelState.AddModelError("", "Invalid Username or Password");
-                return View();
-            }
-            else
-            {
-                // Valid, redirect to user profile
-                System.Web.Security.FormsAuthentication.SetAuthCookie(loginUser.UserName, loginUser.RememberMe);
-
-                return Redirect(FormsAuthentication.GetRedirectUrl(loginUser.UserName, loginUser.RememberMe));
+                return RedirectToAction("Logout");
             }
         }
 
@@ -178,6 +185,8 @@ namespace WSAD_Project.Controllers
 
         public ActionResult UserNavPartial()
         {
+            try
+            {
             // Capture logged in User
             string username = this.User.Identity.Name;
 
@@ -202,6 +211,11 @@ namespace WSAD_Project.Controllers
 
             // Send the view model to the Partial View
             return PartialView(userNavVM);
+            }
+            catch
+            {
+                return Content("");
+            }
         }
 
 
