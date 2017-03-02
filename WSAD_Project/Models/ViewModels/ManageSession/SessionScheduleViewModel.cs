@@ -6,14 +6,14 @@ using WSAD_Project.Models.Data;
 
 namespace WSAD_Project.Models.ViewModels.ManageSession
 {
-    public class SessionSignUpViewModel
+    public class SessionScheduleViewModel
     {
-        public SessionSignUpViewModel()
+        public SessionScheduleViewModel()
         {
 
         }
 
-        public SessionSignUpViewModel(Session sessionDTO)
+        public SessionScheduleViewModel(Session sessionDTO)
         {
             Id = sessionDTO.Id;
             Title = sessionDTO.Title;
@@ -32,7 +32,5 @@ namespace WSAD_Project.Models.ViewModels.ManageSession
         public DateTime Time { get; set; }
         public int Occupancy { get; set; }
         public bool IsSelected { get; set; }
-
-        public bool DatabaseUpdated { get; set; }
     }
 }

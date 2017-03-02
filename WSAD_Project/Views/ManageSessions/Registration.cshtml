@@ -1,15 +1,15 @@
-﻿@model List<WSAD_Project.Models.ViewModels.ManageSession.SessionRegisteredViewModel>
+﻿@model List<WSAD_Project.Models.ViewModels.ManageSession.SessionRegistrationViewModel>
 
 @{
-    ViewBag.Title = "Registered";
+    ViewBag.Title = "Registration";
 }
 
-<h2>Registered</h2>
+<h2>Session Registration</h2>
 
-@using (Html.BeginForm("RemoveSession", "ManageSessions"))
+@using (Html.BeginForm("Registration", "ManageSessions"))
 {
-    <button type="submit" class="btn btn-danger">Remove Selected Sessions</button>
-    @Html.ActionLink("Cancel Changes", "Index")
+    <button type="submit" class="btn btn-success">Register For Selected Sessions</button>
+    @Html.ActionLink("Cancel Registration", "Index")
 
     <table class="table">
         <tr>
@@ -64,15 +64,14 @@
                     @Html.DisplayFor(modelItem => item.Occupancy)
                 </td>
                 <td>
-                    @*                    @Html.ActionLink("Details", "Details", "ManageSessions", new { id = item.Id }, null)
-                    *@
-                </td>
+@*                    @Html.ActionLink("Details", "Details", "ManageSessions", new { id = item.Id }, null)
+*@                </td>
             </tr>
         }
 
     </table>
 
-    <button type="submit" class="btn btn-danger">Remove Selected Sessions</button>
-    @Html.ActionLink("Cancel Changes", "Index")
+    <button type="submit" class="btn btn-success">Register For Selected Sessions</button>
+    @Html.ActionLink("Cancel Registration", "Index")
 
 }

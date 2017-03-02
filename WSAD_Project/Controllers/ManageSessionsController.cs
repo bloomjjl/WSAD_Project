@@ -16,6 +16,9 @@ namespace WSAD_Project.Controllers
             // create list of current sessions
             List<ManageSessionViewModel> collectionOfSessionVM = GetListOfAvailableSessionsFromDatabase();
 
+            // update list of available seats for each session
+            collectionOfSessionVM = UpdateAvailableSeatsForEachSessionFromDatabase(collectionOfSessionVM);
+
             // send ViewModel collection to view
             return View(collectionOfSessionVM);
         }
@@ -24,31 +27,47 @@ namespace WSAD_Project.Controllers
 
         public List<ManageSessionViewModel> GetListOfAvailableSessionsFromDatabase()
         {
-            try
-            {
-                // setup a DbContext
-                List<ManageSessionViewModel> collectionOfSessionVM = new List<ManageSessionViewModel>();
+            // setup a DbContext
+            List<ManageSessionViewModel> collectionOfSessionVM = new List<ManageSessionViewModel>();
 
-                using (WSADDbContext context = new WSADDbContext())
+            using (WSADDbContext context = new WSADDbContext())
+            {
+                // get all sessions
+                var dbSessions = context.Sessions;
+
+                // move sessions to a ViewModel object
+                foreach (var sessionDTO in dbSessions)
                 {
-                    // get all sessions
-                    var dbSessions = context.Sessions;
-
-                    // move sessions to a ViewModel object
-                    foreach (var sessionDTO in dbSessions)
-                    {
-                        collectionOfSessionVM.Add(
-                            new ManageSessionViewModel(sessionDTO)
-                            );
-                    }
+                    collectionOfSessionVM.Add(
+                        new ManageSessionViewModel(sessionDTO)
+                        );
                 }
+            }
 
-                return collectionOfSessionVM;
-            }
-            catch
+            return collectionOfSessionVM;
+        }
+
+
+
+        public List<ManageSessionViewModel> UpdateAvailableSeatsForEachSessionFromDatabase(List<ManageSessionViewModel> collectionOfSessionVM)
+        {
+            using (WSADDbContext context = new WSADDbContext())
             {
-                return new List<ManageSessionViewModel>();
+                // get all sessions users have signed up for
+                var dbUserSessions = context.UserSessions;
+
+                // update the number of seats available for each session
+                for (int i = 0; i < collectionOfSessionVM.Count(); i++)
+                {
+                    int totalSeats = collectionOfSessionVM[i].Occupancy;
+                    int currentSessionId = collectionOfSessionVM[i].Id;
+                    int seatsTaken = dbUserSessions.Where(x => x.SessionId == currentSessionId).Count();
+
+                    collectionOfSessionVM[i].RemainingSeats = totalSeats - seatsTaken;
+                }
             }
+
+            return collectionOfSessionVM;
         }
 
 
@@ -56,11 +75,8 @@ namespace WSAD_Project.Controllers
 
 
 
-
-
-
         [HttpGet]
-        public ActionResult Registered()
+        public ActionResult Schedule()
         {
             // make sure user is logged in
             int userId = GetUserIdForUsernameFromDatabase(this.User.Identity.Name);
@@ -70,7 +86,7 @@ namespace WSAD_Project.Controllers
             }
 
             // get list of sessions user is signed up for
-            List<SessionRegisteredViewModel> collectionUserSessionVM = GetListOfRegisteredUserSessionsFromDatabase(userId);
+            List<SessionScheduleViewModel> collectionUserSessionVM = GetListOfScheduledUserSessionsFromDatabase(userId);
 
             return View(collectionUserSessionVM);
         }
@@ -79,28 +95,42 @@ namespace WSAD_Project.Controllers
 
         [HttpPost]
         [Authorize]
-        public ActionResult RemoveSession(List<SessionRegisteredViewModel> collectionsOfSessions)
+        public ActionResult RemoveSession(List<SessionScheduleViewModel> collectionsOfSessions)
         {
             // filter collectionOfSessions to find the Selected Items only
             var vmSessionsSelected = collectionsOfSessions.Where(x => x.IsSelected == true).ToList();
+
+            // stop if no sessions have been selected
+            if (vmSessionsSelected.Count == 0)
+            {
+                TempData["SessionMessage"] = "";
+                return Redirect("Index");
+            }
 
             // Capture logged in User
             int userId = GetUserIdForUsernameFromDatabase(this.User.Identity.Name);
 
             // update database with selected items
-            bool sessionUpdated = UpdateSessionsUserCanceledInDatabase(vmSessionsSelected, userId);
+            if (UpdateSessionsUserCanceledInDatabase(vmSessionsSelected, userId))
+            {
+                TempData["SessionMessage"] = "SUCCESS";
+            }
+            else
+            {
+                TempData["SessionMessage"] = "PROBLEM";
+            }
 
             return Redirect("Index");
         }
 
 
 
-        public List<SessionSignUpViewModel> GetListOfSessionsUserNotSignedUpForFromDatabase(int userId)
+        public List<SessionRegistrationViewModel> GetListOfSessionsUserNotSignedUpForFromDatabase(int userId)
         {
             try
             {
                 // setup a DbContext
-                List<SessionSignUpViewModel> collectionOfUserSessionVM = new List<SessionSignUpViewModel>();
+                List<SessionRegistrationViewModel> collectionOfUserSessionVM = new List<SessionRegistrationViewModel>();
 
                 using (WSADDbContext context = new WSADDbContext())
                 {
@@ -118,7 +148,7 @@ namespace WSAD_Project.Controllers
                         if (userSessionDTO == null)
                         {
                             collectionOfUserSessionVM.Add(
-                                new SessionSignUpViewModel(sessionDTO)
+                                new SessionRegistrationViewModel(sessionDTO)
                                 );
                         }
                     }
@@ -128,18 +158,18 @@ namespace WSAD_Project.Controllers
             }
             catch
             {
-                return new List<SessionSignUpViewModel>();
+                return new List<SessionRegistrationViewModel>();
             }
         }
 
 
 
-        public List<SessionRegisteredViewModel> GetListOfRegisteredUserSessionsFromDatabase(int userId)
+        public List<SessionScheduleViewModel> GetListOfScheduledUserSessionsFromDatabase(int userId)
         {
             try
             {
                 // setup a DbContext
-                List<SessionRegisteredViewModel> collectionOfUserSessionVM = new List<SessionRegisteredViewModel>();
+                List<SessionScheduleViewModel> collectionOfUserSessionVM = new List<SessionScheduleViewModel>();
 
                 using (WSADDbContext context = new WSADDbContext())
                 {
@@ -152,7 +182,7 @@ namespace WSAD_Project.Controllers
                         var sessionDTO = context.Sessions.Find(userSessionDTO.SessionId);
 
                         collectionOfUserSessionVM.Add(
-                            new SessionRegisteredViewModel(sessionDTO)
+                            new SessionScheduleViewModel(sessionDTO)
                             );
                     }
                 }
@@ -161,7 +191,7 @@ namespace WSAD_Project.Controllers
             }
             catch
             {
-                return new List<SessionRegisteredViewModel>();
+                return new List<SessionScheduleViewModel>();
             }
         }
 
@@ -170,7 +200,7 @@ namespace WSAD_Project.Controllers
 
         [HttpGet]
         [Authorize]
-        public ActionResult SignUp()
+        public ActionResult Registration()
         {
             // make sure user is logged in
             int userId = GetUserIdForUsernameFromDatabase(this.User.Identity.Name);
@@ -180,7 +210,7 @@ namespace WSAD_Project.Controllers
             }
 
             // create list of current sessions user not signed up for
-            List<SessionSignUpViewModel> collectionOfSessionVM = GetListOfSessionsUserNotSignedUpForFromDatabase(userId);
+            List<SessionRegistrationViewModel> collectionOfSessionVM = GetListOfSessionsUserNotSignedUpForFromDatabase(userId);
 
             return View(collectionOfSessionVM);
         }
@@ -189,16 +219,30 @@ namespace WSAD_Project.Controllers
 
         [HttpPost]
         [Authorize]
-        public ActionResult SignUp(List<SessionSignUpViewModel> collectionsOfSessions)
+        public ActionResult Registration(List<SessionRegistrationViewModel> collectionsOfSessions)
         {
             // filter collectionOfSessions to find the Selected Items only
             var vmSessionsSelected = collectionsOfSessions.Where(x => x.IsSelected == true).ToList();
+
+            // stop if no sessions have been selected
+            if (vmSessionsSelected.Count == 0)
+            {
+                TempData["SessionMessage"] = "";
+                return Redirect("Index");
+            }
 
             // Capture logged in User
             int userId = GetUserIdForUsernameFromDatabase(this.User.Identity.Name);
 
             // update database with selected items
-            bool sessionUpdated = UpdateSessionsUserSignedUpForInDatabase(vmSessionsSelected, userId);
+            if (UpdateSessionsUserRegisteredForInDatabase(vmSessionsSelected, userId))
+            {
+                TempData["SessionMessage"] = "SUCCESS";
+            }
+            else
+            {
+                TempData["SessionMessage"] = "PROBLEM";
+            }
 
             return Redirect("Index");
         }
@@ -232,7 +276,7 @@ namespace WSAD_Project.Controllers
 
 
 
-        private bool UpdateSessionsUserSignedUpForInDatabase(IEnumerable<SessionSignUpViewModel> vmSessionsSelected, int userId)
+        private bool UpdateSessionsUserRegisteredForInDatabase(IEnumerable<SessionRegistrationViewModel> vmSessionsSelected, int userId)
         {
             bool sessionsUpdated = false;
 
@@ -258,6 +302,7 @@ namespace WSAD_Project.Controllers
                 }
 
                 context.SaveChanges();
+                sessionsUpdated = true;
             }
 
             // 
@@ -266,7 +311,7 @@ namespace WSAD_Project.Controllers
 
 
 
-        private bool UpdateSessionsUserCanceledInDatabase(IEnumerable<SessionRegisteredViewModel> vmSessionsSelected, int userId)
+        private bool UpdateSessionsUserCanceledInDatabase(IEnumerable<SessionScheduleViewModel> vmSessionsSelected, int userId)
         {
             bool sessionsUpdated = false;
 
@@ -288,6 +333,7 @@ namespace WSAD_Project.Controllers
                 }
 
                 context.SaveChanges();
+                sessionsUpdated = true;
             }
 
             // 

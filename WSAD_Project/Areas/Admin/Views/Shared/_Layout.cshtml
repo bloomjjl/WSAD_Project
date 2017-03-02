@@ -16,27 +16,15 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                @Html.ActionLink("Bloom Final Project", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Home", "Index", "Home", new { area = "" }, null)</li>
-                    <li>@Html.ActionLink("About", "About", "Home", new { area = "" }, null)</li>
-                    <li>@Html.ActionLink("Contact", "Contact", "Home", new { area = "" }, null)</li>
-                    <li>@Html.ActionLink("Session", "Index", "ManageSessions", new { area = "" }, null)</li>
-                    @if (Request.IsAuthenticated)
-                    {
-                        <li>@Html.ActionLink("Logout", "Logout", "Account", new { area = "" }, null)</li>
-                        <li>@Html.Action("UserNavPartial", "Account", new { area = "" })</li>
-                    }
-                    else
-                    {
-                        <li>@Html.ActionLink("Login", "Login", "Account", new { area = "" }, null)</li>
-                    }
                 </ul>
             </div>
         </div>
     </div>
+
     <div class="container body-content">
         @RenderBody()
         <hr />

@@ -22,6 +22,7 @@ namespace WSAD_Project.Models.ViewModels.ManageSession
             Room = sessionDTO.Room;
             Time = sessionDTO.Time;
             Occupancy = sessionDTO.Occupancy;
+            RemainingSeats = sessionDTO.Occupancy;
         }
 
         public int Id { get; set; }
@@ -31,6 +32,7 @@ namespace WSAD_Project.Models.ViewModels.ManageSession
         public string Room { get; set; }
         public DateTime Time { get; set; }
         public int Occupancy { get; set; }
+        public int RemainingSeats { get; set; }
         public bool IsSelected { get; set; }
     }
 }

@@ -6,9 +6,20 @@
 
 <h2>Sessions</h2>
 
+@if (TempData["SessionMessage"] != null)
+{
+    if (TempData["SessionMessage"].ToString() == "SUCCESS")
+    {
+        <div class="alert alert-success">
+            <span class="glyphicon glyphicon-ok"></span>
+            SUCCESS: YOUR SESSION INFORMATION HAS BEEN UPDATED
+        </div>
+    }
+}
+
 <p>
-    @Html.ActionLink("Sign Up", "SignUp") | 
-    @Html.ActionLink("Registered", "Registered")
+    @Html.ActionLink("Sign Up", "Registration") |
+    @Html.ActionLink("View Schedule", "Schedule")
 </p>
 <table class="table">
     <tr>
@@ -29,6 +40,9 @@
         </th>
         <th>
             @Html.DisplayNameFor(model => model.Occupancy)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.RemainingSeats)
         </th>
         <th></th>
     </tr>
@@ -55,8 +69,12 @@
                 @Html.DisplayFor(modelItem => item.Occupancy)
             </td>
             <td>
-@*                @Html.ActionLink("Details", "Details", new { id = item.Id })
-*@            </td>
+                @Html.DisplayFor(modelItem => item.RemainingSeats)
+            </td>
+            <td>
+                @*                @Html.ActionLink("Details", "Details", new { id = item.Id })
+                *@
+            </td>
         </tr>
     }
 

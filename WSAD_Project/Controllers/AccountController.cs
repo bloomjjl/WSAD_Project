@@ -268,19 +268,27 @@ namespace WSAD_Project.Controllers
 
 
         [HttpGet]
-        public ActionResult Edit(int id)
+        public ActionResult Edit(string id)
         {
+            // make sure id is an integer
+            int intId = ConvertStringIdToValidIntegerId(id);
+
+            if (intId == 0)
+            {
+                return Redirect("Login");
+            }
+
             // Get user id
             EditViewModel editVM;
 
             using (WSADDbContext context = new WSADDbContext())
             {
                 // Get user from database
-                User userDTO = context.Users.Find(id);
+                User userDTO = context.Users.Find(intId);
 
                 if (userDTO == null)
                 {
-                    return Content("Invalid Id");
+                    return Content("Login");
                 }
 
                 // create EditViewModel
@@ -298,6 +306,27 @@ namespace WSAD_Project.Controllers
             // Send the viewModel to the View
             return View(editVM);
         }
+
+
+
+
+        /// <summary>
+        /// convert a string value to an integer value
+        /// </summary>
+        /// <returns>zero if not integer</returns>
+        public int ConvertStringIdToValidIntegerId(string strId)
+        {
+            int intId = 0;
+
+            if(int.TryParse(strId, out intId))
+            {
+                intId = int.Parse(strId);
+            }
+
+            return intId;
+        }
+
+
 
 
 

@@ -156,6 +156,9 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
+    <Compile Include="Areas\Admin\Controllers\ManageUsersController.cs" />
+    <Compile Include="Areas\Admin\Models\ViewModels\ManageUser\ManageUserViewModel.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageSessionsController.cs" />
@@ -172,8 +175,8 @@
     <Compile Include="Models\ViewModels\Account\UserNavPartialViewModel.cs" />
     <Compile Include="Models\ViewModels\Account\UserProfileViewModel.cs" />
     <Compile Include="Models\ViewModels\ManageSession\ManageSessionViewModel.cs" />
-    <Compile Include="Models\ViewModels\ManageSession\SessionRegisteredViewModel.cs" />
-    <Compile Include="Models\ViewModels\ManageSession\SessionSignUpViewModel.cs" />
+    <Compile Include="Models\ViewModels\ManageSession\SessionScheduleViewModel.cs" />
+    <Compile Include="Models\ViewModels\ManageSession\SessionRegistrationViewModel.cs" />
     <Compile Include="Models\ViewModels\ManageSession\SessionDetailsViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -193,6 +196,10 @@
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Areas\Admin\Views\web.config" />
+    <Content Include="Areas\Admin\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\Admin\Views\Shared\_Layout.cshtml" />
+    <Content Include="Areas\Admin\Views\ManageUsers\Index.cshtml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
@@ -226,9 +233,9 @@
     <Content Include="Views\Account\UserNavPartial.cshtml" />
     <Content Include="Views\Account\UserProfile.cshtml" />
     <Content Include="Views\ManageSessions\Index.cshtml" />
-    <Content Include="Views\ManageSessions\SignUp.cshtml" />
+    <Content Include="Views\ManageSessions\Registration.cshtml" />
     <Content Include="Views\ManageSessions\Details.cshtml" />
-    <Content Include="Views\ManageSessions\Registered.cshtml" />
+    <Content Include="Views\ManageSessions\Schedule.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

@@ -1,15 +1,15 @@
-﻿@model List<WSAD_Project.Models.ViewModels.ManageSession.SessionSignUpViewModel>
+﻿@model List<WSAD_Project.Models.ViewModels.ManageSession.SessionScheduleViewModel>
 
 @{
-    ViewBag.Title = "SignUp";
+    ViewBag.Title = "Registered";
 }
 
-<h2>Session Sign Up</h2>
+<h2>Session Schedule</h2>
 
-@using (Html.BeginForm("SignUp", "ManageSessions"))
+@using (Html.BeginForm("RemoveSession", "ManageSessions"))
 {
-    <button type="submit" class="btn btn-success">Sign Up For Selected Sessions</button>
-    @Html.ActionLink("Cancel Sign Up", "Index")
+    <button type="submit" class="btn btn-danger">Remove Selected Sessions</button>
+    @Html.ActionLink("Cancel Changes", "Index")
 
     <table class="table">
         <tr>
@@ -64,14 +64,15 @@
                     @Html.DisplayFor(modelItem => item.Occupancy)
                 </td>
                 <td>
-@*                    @Html.ActionLink("Details", "Details", "ManageSessions", new { id = item.Id }, null)
-*@                </td>
+                    @*                    @Html.ActionLink("Details", "Details", "ManageSessions", new { id = item.Id }, null)
+                    *@
+                </td>
             </tr>
         }
 
     </table>
 
-    <button type="submit" class="btn btn-success">Sign Up For Selected Sessions</button>
-    @Html.ActionLink("Cancel Sign Up", "Index")
+    <button type="submit" class="btn btn-danger">Remove Selected Sessions</button>
+    @Html.ActionLink("Cancel Changes", "Index")
 
 }
