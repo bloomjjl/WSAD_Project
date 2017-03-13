@@ -6,13 +6,15 @@
 
 <h2>Manage Users</h2>
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
-
 @using (Html.BeginForm("Delete", "ManageUsers"))
 {
-    <button type="submit" class="btn btn-danger">Delete Users</button>
+    @Html.AntiForgeryToken()
+
+    <p>
+        <button type="submit" class="btn btn-danger">Delete Selected Users</button>
+        <span>&nbsp;</span>
+        @(Html.ActionLink("Create New User", "Create", "ManageUsers", null, new { @class = "btn btn-success" }))
+    </p>
 
     <table class="table">
         <tr>
@@ -33,6 +35,9 @@
             </th>
             <th>
                 Is Active
+            </th>
+            <th>
+                Is Presenter
             </th>
             <th>
                 Is Admin
@@ -72,6 +77,9 @@
                     @Html.DisplayFor(modelItem => item.IsActive)
                 </td>
                 <td>
+                    @Html.DisplayFor(modelItem => item.IsPresenter)
+                </td>
+                <td>
                     @Html.DisplayFor(modelItem => item.IsAdmin)
                 </td>
                 <td>
@@ -81,14 +89,14 @@
                     @Html.DisplayFor(modelItem => item.DateCreated)
                 </td>
                 <td>
-                    @Html.ActionLink("Edit", "Edit", "Account", new { id = item.Id }, null) |
-                    @Html.ActionLink("Details", "UserProfile", "Account", new { id = item.Id }, null) |
-                    @Html.ActionLink("Delete", "Delete", "Account", new { id = item.Id }, null)
+                    @Html.ActionLink("Edit", "Edit", "ManageUsers", new { id = item.Id }, null) 
                 </td>
             </tr>
         }
 
     </table>
 
-    <button type="submit" class="btn btn-danger">Delete Users</button>
+    <button type="submit" class="btn btn-danger">Delete Selected Users</button>
+    <span>&nbsp;</span>
+    @(Html.ActionLink("Create New User", "Create", "ManageUsers", null, new { @class = "btn btn-success" }));
 }

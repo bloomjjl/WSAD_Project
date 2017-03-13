@@ -1,0 +1,53 @@
+﻿@model List<WSAD_Project.Areas.Admin.Models.ViewModels.ManageSession.ManageSessionsViewModel>
+
+@{
+    ViewBag.Title = "Manage Session Index";
+}
+
+<h2>Manage Sessions</h2>
+
+@using (Html.BeginForm("Delete", "ManageSessions"))
+{
+    @Html.AntiForgeryToken()
+
+    <p>
+        <button type="submit" class="btn btn-danger">Delete Selected Sessions</button>
+        <span>&nbsp;</span>
+        @(Html.ActionLink("Create New Session", "Create", "ManageSessions", null, new { @class = "btn btn-success" }))
+    </p>
+
+    <table class="table">
+        <tr>
+            <th>
+                &nbsp;
+            </th>
+            <th>
+                Title
+            </th>
+            <th></th>
+        </tr>
+
+
+        @for (int i = 0; i < Model.Count; i++)
+        {
+            var item = Model[i];
+            <tr>
+                <td>
+                    @Html.HiddenFor(x => Model[i].Id)
+                    @Html.CheckBoxFor(x => Model[i].IsSelected)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.Id })
+                </td>
+            </tr>
+        }
+   
+    </table>
+
+    <button type="submit" class="btn btn-danger">Delete Selected Sessions</button>
+    <span>&nbsp;</span>
+    @(Html.ActionLink("Create New Session", "Create", "ManageSessions", null, new { @class = "btn btn-success" }));
+}

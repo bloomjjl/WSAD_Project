@@ -4,16 +4,16 @@ using System.Linq;
 using System.Web;
 using WSAD_Project.Models.Data;
 
-namespace WSAD_Project.Models.ViewModels.ManageSession
+namespace WSAD_Project.Areas.Admin.Models.ViewModels.ManageSession
 {
-    public class SessionDetailsViewModel
+    public class ManageSessionsViewModel
     {
-        public SessionDetailsViewModel()
+        public ManageSessionsViewModel()
         {
 
         }
 
-        public SessionDetailsViewModel(Session sessionDTO)
+        public ManageSessionsViewModel(Session sessionDTO)
         {
             Id = sessionDTO.Id;
             Title = sessionDTO.Title;
@@ -22,6 +22,7 @@ namespace WSAD_Project.Models.ViewModels.ManageSession
             Room = sessionDTO.Room;
             Time = sessionDTO.Time;
             Occupancy = sessionDTO.Occupancy;
+            RemainingSeats = sessionDTO.Occupancy;
         }
 
         public int Id { get; set; }
@@ -31,6 +32,7 @@ namespace WSAD_Project.Models.ViewModels.ManageSession
         public string Room { get; set; }
         public DateTime Time { get; set; }
         public int Occupancy { get; set; }
+        public int RemainingSeats { get; set; }
         public bool IsSelected { get; set; }
     }
 }

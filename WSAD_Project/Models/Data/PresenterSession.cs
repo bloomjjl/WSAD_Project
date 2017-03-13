@@ -7,8 +7,8 @@ using System.Web;
 
 namespace WSAD_Project.Models.Data
 {
-    [Table("tblUserSession")]
-    public class UserSession
+    [Table("tblPresenterSession")]
+    public class PresenterSession
     {
         [Key]
         [Column("User_Id", Order = 0)] // connects foreign key below

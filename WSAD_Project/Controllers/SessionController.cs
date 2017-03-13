@@ -4,20 +4,20 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using WSAD_Project.Models.Data;
-using WSAD_Project.Models.ViewModels.ManageSession;
+using WSAD_Project.Models.ViewModels.Session;
 
 namespace WSAD_Project.Controllers
 {
-    public class ManageSessionsController : Controller
+    public class SessionController : Controller
     {
         // GET: Session
         public ActionResult Index()
         {
             // create list of current sessions
-            List<ManageSessionViewModel> collectionOfSessionVM = GetListOfAvailableSessionsFromDatabase();
+            List<SessionViewModel> collectionOfSessionVM = GetListOfAvailableSessionsFromDatabase();
 
             // update list of available seats for each session
-            collectionOfSessionVM = UpdateAvailableSeatsForEachSessionFromDatabase(collectionOfSessionVM);
+            collectionOfSessionVM = UpdateAvailableSeatsForListOfSessionsFromDatabase(collectionOfSessionVM);
 
             // send ViewModel collection to view
             return View(collectionOfSessionVM);
@@ -25,10 +25,68 @@ namespace WSAD_Project.Controllers
 
 
 
-        public List<ManageSessionViewModel> GetListOfAvailableSessionsFromDatabase()
+        public ActionResult Details(SessionViewModel sessionVM)
+        {
+            if(!ModelState.IsValid)
+            {
+                return RedirectToAction("Index");
+            }
+
+            // make sure session selected to display
+            if(sessionVM.Id == 0)
+            {
+                return RedirectToAction("Index");
+            }
+
+            // get session information from database
+            using (WSADDbContext context = new WSADDbContext())
+            {
+                Models.Data.Session sessionDTO = context.Sessions.FirstOrDefault(x => x.Id == sessionVM.Id);
+
+                if (sessionDTO == null) { return Redirect("Index"); }
+
+                int remainingSeats = GetAvailableSeatsForSessionFromDatabase(sessionDTO);
+
+                return View(new SessionDetailsViewModel(sessionDTO, remainingSeats));
+            }
+        }
+
+
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public ActionResult Details(SessionDetailsViewModel sessionVM)
+        {
+            // stop if no sessions has been selected
+            if (sessionVM.Id == 0)
+            {
+                TempData["RegisterSessionMessage"] = "";
+                return Redirect("Index");
+            }
+
+            // Capture logged in User
+            int userId = GetUserIdForUsernameFromDatabase(this.User.Identity.Name);
+
+            // update database with selected items
+            if (UpdateSingleSessionUserRegisteredForInDatabase(sessionVM, userId))
+            {
+                TempData["RegisterSessionMessage"] = "SUCCESS";
+            }
+            else
+            {
+                TempData["RegisterSessionMessage"] = "PROBLEM";
+            }
+
+            return Redirect("Index");
+        }
+
+
+
+        public List<SessionViewModel> GetListOfAvailableSessionsFromDatabase()
         {
             // setup a DbContext
-            List<ManageSessionViewModel> collectionOfSessionVM = new List<ManageSessionViewModel>();
+            List<SessionViewModel> collectionOfSessionVM = new List<SessionViewModel>();
 
             using (WSADDbContext context = new WSADDbContext())
             {
@@ -39,7 +97,7 @@ namespace WSAD_Project.Controllers
                 foreach (var sessionDTO in dbSessions)
                 {
                     collectionOfSessionVM.Add(
-                        new ManageSessionViewModel(sessionDTO)
+                        new SessionViewModel(sessionDTO)
                         );
                 }
             }
@@ -49,7 +107,21 @@ namespace WSAD_Project.Controllers
 
 
 
-        public List<ManageSessionViewModel> UpdateAvailableSeatsForEachSessionFromDatabase(List<ManageSessionViewModel> collectionOfSessionVM)
+        public int GetAvailableSeatsForSessionFromDatabase(Models.Data.Session sessionDTO)
+        {
+            using (WSADDbContext context = new WSADDbContext())
+            {
+                List<Models.Data.UserSession> dbSessions = context.UserSessions.Where(x => x.SessionId == sessionDTO.Id).ToList();
+
+                if(dbSessions == null) { return 0; }
+                
+                return sessionDTO.Occupancy - dbSessions.Count();
+            }
+        }
+
+
+
+        public List<SessionViewModel> UpdateAvailableSeatsForListOfSessionsFromDatabase(List<SessionViewModel> collectionOfSessionVM)
         {
             using (WSADDbContext context = new WSADDbContext())
             {
@@ -69,9 +141,6 @@ namespace WSAD_Project.Controllers
 
             return collectionOfSessionVM;
         }
-
-
-
 
 
 
@@ -95,7 +164,38 @@ namespace WSAD_Project.Controllers
 
         [HttpPost]
         [Authorize]
-        public ActionResult RemoveSession(List<SessionScheduleViewModel> collectionsOfSessions)
+        [ValidateAntiForgeryToken]
+        public ActionResult RemoveSingleSession(ScheduledSessionDetailsViewModel sessionVM)
+        {
+            // stop if no sessions have been selected
+            if (sessionVM.Id == 0)
+            {
+                TempData["RemoveSessionMessage"] = "";
+                return Redirect("Schedule");
+            }
+
+            // Capture logged in User
+            int userId = GetUserIdForUsernameFromDatabase(this.User.Identity.Name);
+
+            // update database with selected items
+            if (UpdateSingleSessionUserCanceledInDatabase(sessionVM, userId))
+            {
+                TempData["RemoveSessionMessage"] = "SUCCESS";
+            }
+            else
+            {
+                TempData["RemoveSessionMessage"] = "PROBLEM";
+            }
+
+            return Redirect("Schedule");
+        }
+
+
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public ActionResult RemoveSessions(List<SessionScheduleViewModel> collectionsOfSessions)
         {
             // filter collectionOfSessions to find the Selected Items only
             var vmSessionsSelected = collectionsOfSessions.Where(x => x.IsSelected == true).ToList();
@@ -103,8 +203,8 @@ namespace WSAD_Project.Controllers
             // stop if no sessions have been selected
             if (vmSessionsSelected.Count == 0)
             {
-                TempData["SessionMessage"] = "";
-                return Redirect("Index");
+                TempData["RemoveSessionMessage"] = "";
+                return Redirect("Schedule");
             }
 
             // Capture logged in User
@@ -113,16 +213,43 @@ namespace WSAD_Project.Controllers
             // update database with selected items
             if (UpdateSessionsUserCanceledInDatabase(vmSessionsSelected, userId))
             {
-                TempData["SessionMessage"] = "SUCCESS";
+                TempData["RemoveSessionMessage"] = "SUCCESS";
             }
             else
             {
-                TempData["SessionMessage"] = "PROBLEM";
+                TempData["RemoveSessionMessage"] = "PROBLEM";
             }
 
-            return Redirect("Index");
+            return Redirect("Schedule");
         }
 
+
+
+        public ActionResult ScheduledSessionDetails(SessionScheduleViewModel sessionVM)
+        {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToAction("Schedule");
+            }
+
+            // make sure session selected to display
+            if (sessionVM.Id == 0)
+            {
+                return RedirectToAction("Schedule");
+            }
+
+            // get session information from database
+            using (WSADDbContext context = new WSADDbContext())
+            {
+                Models.Data.Session sessionDTO = context.Sessions.FirstOrDefault(x => x.Id == sessionVM.Id);
+
+                if (sessionDTO == null) { return Redirect("Schedule"); }
+
+                int remainingSeats = GetAvailableSeatsForSessionFromDatabase(sessionDTO);
+
+                return View(new ScheduledSessionDetailsViewModel(sessionDTO, remainingSeats));
+            }
+        }
 
 
         public List<SessionRegistrationViewModel> GetListOfSessionsUserNotSignedUpForFromDatabase(int userId)
@@ -204,6 +331,7 @@ namespace WSAD_Project.Controllers
         {
             // make sure user is logged in
             int userId = GetUserIdForUsernameFromDatabase(this.User.Identity.Name);
+
             if (userId == 0)
             {
                 return RedirectToAction("Login", "Account");
@@ -219,7 +347,8 @@ namespace WSAD_Project.Controllers
 
         [HttpPost]
         [Authorize]
-        public ActionResult Registration(List<SessionRegistrationViewModel> collectionsOfSessions)
+        [ValidateAntiForgeryToken]
+        public ActionResult Registration(List<SessionViewModel> collectionsOfSessions)
         {
             // filter collectionOfSessions to find the Selected Items only
             var vmSessionsSelected = collectionsOfSessions.Where(x => x.IsSelected == true).ToList();
@@ -227,7 +356,7 @@ namespace WSAD_Project.Controllers
             // stop if no sessions have been selected
             if (vmSessionsSelected.Count == 0)
             {
-                TempData["SessionMessage"] = "";
+                TempData["RegisterSessionMessage"] = "";
                 return Redirect("Index");
             }
 
@@ -237,11 +366,11 @@ namespace WSAD_Project.Controllers
             // update database with selected items
             if (UpdateSessionsUserRegisteredForInDatabase(vmSessionsSelected, userId))
             {
-                TempData["SessionMessage"] = "SUCCESS";
+                TempData["RegisterSessionMessage"] = "SUCCESS";
             }
             else
             {
-                TempData["SessionMessage"] = "PROBLEM";
+                TempData["RegisterSessionMessage"] = "PROBLEM";
             }
 
             return Redirect("Index");
@@ -276,7 +405,38 @@ namespace WSAD_Project.Controllers
 
 
 
-        private bool UpdateSessionsUserRegisteredForInDatabase(IEnumerable<SessionRegistrationViewModel> vmSessionsSelected, int userId)
+        private bool UpdateSingleSessionUserRegisteredForInDatabase(SessionDetailsViewModel sessionVM, int userId)
+        {
+            bool sessionsUpdated = false;
+
+            using (WSADDbContext context = new WSADDbContext())
+            {
+                // make sure user found in database
+                int sessionId = sessionVM.Id;
+                var dtoUserSession = context.UserSessions.Where(x => x.UserId == userId).FirstOrDefault(x => x.SessionId == sessionVM.Id);
+
+                // make sure user is not already signed up for session
+                if (dtoUserSession == null)
+                {
+                    // update database with selected items
+                    context.UserSessions.Add(new UserSession
+                    {
+                        UserId = userId,
+                        SessionId = sessionId
+                    });
+                }
+
+                context.SaveChanges();
+                sessionsUpdated = true;
+            }
+
+            // 
+            return sessionsUpdated;
+        }
+
+
+
+        private bool UpdateSessionsUserRegisteredForInDatabase(IEnumerable<SessionViewModel> vmSessionsSelected, int userId)
         {
             bool sessionsUpdated = false;
 
@@ -300,6 +460,34 @@ namespace WSAD_Project.Controllers
                     }
 
                 }
+
+                context.SaveChanges();
+                sessionsUpdated = true;
+            }
+
+            // 
+            return sessionsUpdated;
+        }
+
+
+
+        private bool UpdateSingleSessionUserCanceledInDatabase(ScheduledSessionDetailsViewModel sessionVM, int userId)
+        {
+            bool sessionsUpdated = false;
+
+            using (WSADDbContext context = new WSADDbContext())
+            {
+                // make sure user found in database
+                int sessionId = sessionVM.Id;
+                var dtoUserSessionToDelete = context.UserSessions.Where(x => x.UserId == userId).FirstOrDefault(x => x.SessionId == sessionVM.Id);
+
+                // make sure user was signed up for session
+                if (dtoUserSessionToDelete != null)
+                {
+                    context.UserSessions.Remove(dtoUserSessionToDelete);
+                }
+
+                // update database with selected items
 
                 context.SaveChanges();
                 sessionsUpdated = true;
@@ -339,5 +527,7 @@ namespace WSAD_Project.Controllers
             // 
             return sessionsUpdated;
         }
+
+
     }
 }

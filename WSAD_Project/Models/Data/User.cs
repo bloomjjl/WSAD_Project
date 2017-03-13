@@ -27,6 +27,8 @@ namespace WSAD_Project.Models.Data
 
         public bool IsAdmin { get; set; }
 
+        public bool IsPresenter { get; set; }
+
         public DateTime DateCreated { get; set; }
 
         public DateTime DateModified { get; set; }

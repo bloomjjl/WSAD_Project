@@ -6,14 +6,11 @@ using WSAD_Project.Models.Data;
 
 namespace WSAD_Project.Areas.Admin.Models.ViewModels.ManageUser
 {
-    public class ManageUserViewModel
+    public class EditManageUserViewModel
     {
-        public ManageUserViewModel()
-        {
+        public EditManageUserViewModel() { }
 
-        }
-
-        public ManageUserViewModel(User userDTO)
+        public EditManageUserViewModel(User userDTO)
         {
             Id = userDTO.Id;
             FirstName = userDTO.FirstName;
@@ -27,6 +24,7 @@ namespace WSAD_Project.Areas.Admin.Models.ViewModels.ManageUser
             DateCreated = userDTO.DateCreated;
         }
 
+
         public int Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
@@ -37,6 +35,5 @@ namespace WSAD_Project.Areas.Admin.Models.ViewModels.ManageUser
         public bool IsPresenter { get; set; }
         public string Gender { get; set; }
         public DateTime DateCreated { get; set; }
-        public bool IsSelected { get; set; }
     }
 }

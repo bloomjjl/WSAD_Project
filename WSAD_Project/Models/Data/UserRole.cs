@@ -7,22 +7,20 @@ using System.Web;
 
 namespace WSAD_Project.Models.Data
 {
-    [Table("tblUserSession")]
-    public class UserSession
+    [Table("tblUser_Role")]
+    public class UserRole
     {
         [Key]
-        [Column("User_Id", Order = 0)] // connects foreign key below
+        [Column("User_Id", Order = 0)]
         public int UserId { get; set; }
 
-        [Key]
-        [Column("Session_Id", Order = 1)] // connects foreign key below
-        public int SessionId { get; set; }
+        [Key, Column("Role_Id", Order = 1)]
+        public int RoleId { get; set; }
 
-
+        // many-to-many
+        [ForeignKey("RoleId")]
+        public virtual Role Role { get; set; }
         [ForeignKey("UserId")]
         public virtual User User { get; set; }
-
-        [ForeignKey("SessionId")]
-        public virtual Session Session { get; set; }
     }
 }

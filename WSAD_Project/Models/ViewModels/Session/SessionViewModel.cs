@@ -4,16 +4,16 @@ using System.Linq;
 using System.Web;
 using WSAD_Project.Models.Data;
 
-namespace WSAD_Project.Models.ViewModels.ManageSession
+namespace WSAD_Project.Models.ViewModels.Session
 {
-    public class ManageSessionViewModel
+    public class SessionViewModel
     {
-        public ManageSessionViewModel()
+        public SessionViewModel()
         {
 
         }
 
-        public ManageSessionViewModel(Session sessionDTO)
+        public SessionViewModel(Models.Data.Session sessionDTO)
         {
             Id = sessionDTO.Id;
             Title = sessionDTO.Title;

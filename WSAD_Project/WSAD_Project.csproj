@@ -158,15 +158,23 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Admin\Controllers\ManageUsersController.cs" />
+    <Compile Include="Areas\Admin\Models\ViewModels\ManageSession\CreateManageSessionViewModel.cs" />
+    <Compile Include="Areas\Admin\Models\ViewModels\ManageSession\EditManageSessionViewModel.cs" />
+    <Compile Include="Areas\Admin\Models\ViewModels\ManageUser\CreateManageUserViewModel.cs" />
+    <Compile Include="Areas\Admin\Models\ViewModels\ManageUser\EditManageUserViewModel.cs" />
     <Compile Include="Areas\Admin\Models\ViewModels\ManageUser\ManageUserViewModel.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\ManageSessionsController.cs" />
+    <Compile Include="Areas\Admin\Controllers\ManageSessionsController.cs" />
+    <Compile Include="Controllers\SessionController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\Data\PresenterSession.cs" />
+    <Compile Include="Models\Data\Role.cs" />
     <Compile Include="Models\Data\Session.cs" />
     <Compile Include="Models\Data\User.cs" />
+    <Compile Include="Models\Data\UserRole.cs" />
     <Compile Include="Models\Data\UserSession.cs" />
     <Compile Include="Models\Data\WSADDbContext.cs" />
     <Compile Include="Models\ViewModels\Account\CreateUserViewModel.cs" />
@@ -174,10 +182,12 @@
     <Compile Include="Models\ViewModels\Account\LoginUserViewModel.cs" />
     <Compile Include="Models\ViewModels\Account\UserNavPartialViewModel.cs" />
     <Compile Include="Models\ViewModels\Account\UserProfileViewModel.cs" />
-    <Compile Include="Models\ViewModels\ManageSession\ManageSessionViewModel.cs" />
-    <Compile Include="Models\ViewModels\ManageSession\SessionScheduleViewModel.cs" />
-    <Compile Include="Models\ViewModels\ManageSession\SessionRegistrationViewModel.cs" />
-    <Compile Include="Models\ViewModels\ManageSession\SessionDetailsViewModel.cs" />
+    <Compile Include="Models\ViewModels\Session\ScheduledSessionDetailsViewModel.cs" />
+    <Compile Include="Models\ViewModels\Session\SessionRegistrationViewModel.cs" />
+    <Compile Include="Models\ViewModels\Session\SessionScheduleViewModel.cs" />
+    <Compile Include="Models\ViewModels\Session\SessionViewModel.cs" />
+    <Compile Include="Areas\Admin\Models\ViewModels\ManageSession\ManageSessionViewModel.cs" />
+    <Compile Include="Models\ViewModels\Session\SessionDetailsViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -200,6 +210,11 @@
     <Content Include="Areas\Admin\Views\_ViewStart.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\_Layout.cshtml" />
     <Content Include="Areas\Admin\Views\ManageUsers\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\ManageSessions\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\ManageUsers\Edit.cshtml" />
+    <Content Include="Areas\Admin\Views\ManageUsers\Create.cshtml" />
+    <Content Include="Areas\Admin\Views\ManageSessions\Create.cshtml" />
+    <Content Include="Areas\Admin\Views\ManageSessions\Edit.cshtml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
@@ -212,7 +227,9 @@
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\_references.js" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
@@ -232,10 +249,10 @@
     <Content Include="Views\Account\userAccountCreatedConfirmation.cshtml" />
     <Content Include="Views\Account\UserNavPartial.cshtml" />
     <Content Include="Views\Account\UserProfile.cshtml" />
-    <Content Include="Views\ManageSessions\Index.cshtml" />
-    <Content Include="Views\ManageSessions\Registration.cshtml" />
-    <Content Include="Views\ManageSessions\Details.cshtml" />
-    <Content Include="Views\ManageSessions\Schedule.cshtml" />
+    <Content Include="Views\Session\Index.cshtml" />
+    <Content Include="Views\Session\Details.cshtml" />
+    <Content Include="Views\Session\Schedule.cshtml" />
+    <Content Include="Views\Session\ScheduledSessionDetails.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

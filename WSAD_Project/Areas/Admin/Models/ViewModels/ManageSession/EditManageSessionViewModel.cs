@@ -2,18 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using WSAD_Project.Models.Data;
 
-namespace WSAD_Project.Models.ViewModels.ManageSession
+namespace WSAD_Project.Areas.Admin.Models.ViewModels.ManageSession
 {
-    public class SessionScheduleViewModel
+    public class EditManageSessionViewModel
     {
-        public SessionScheduleViewModel()
-        {
+        public EditManageSessionViewModel() { }
 
-        }
-
-        public SessionScheduleViewModel(Session sessionDTO)
+        public EditManageSessionViewModel(WSAD_Project.Models.Data.Session sessionDTO)
         {
             Id = sessionDTO.Id;
             Title = sessionDTO.Title;
@@ -24,6 +20,7 @@ namespace WSAD_Project.Models.ViewModels.ManageSession
             Occupancy = sessionDTO.Occupancy;
         }
 
+
         public int Id { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
@@ -31,6 +28,5 @@ namespace WSAD_Project.Models.ViewModels.ManageSession
         public string Room { get; set; }
         public DateTime Time { get; set; }
         public int Occupancy { get; set; }
-        public bool IsSelected { get; set; }
     }
 }

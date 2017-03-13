@@ -1,0 +1,67 @@
+﻿@model List<WSAD_Project.Models.ViewModels.Session.SessionViewModel>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Available Sessions</h2>
+
+@if (TempData["RegisterSessionMessage"] != null)
+{
+    if (TempData["RegisterSessionMessage"].ToString() == "SUCCESS")
+    {
+        <div class="alert alert-success">
+            <span class="glyphicon glyphicon-ok"></span>
+            SUCCESS: YOUR SESSION INFORMATION HAS BEEN UPDATED
+        </div>
+    }
+}
+
+@using (Html.BeginForm("Registration", "Session"))
+{
+    @Html.AntiForgeryToken()
+
+    <p>
+        <button type="submit" class="btn btn-danger">Register for Selected Sessions</button>
+        <span>&nbsp;</span>
+        @(Html.ActionLink("Clear Selections", "Index", "Session", null, new { @class = "btn btn-warning" }))
+        <span>&nbsp;</span>
+        @(Html.ActionLink("View Registered Sessions", "Schedule", "Session", null, new { @class = "btn btn-success" }))
+    </p>
+
+    <table class="table">
+        <tr>
+            <th>
+                &nbsp;
+            </th>
+            <th>
+                Title
+            </th>
+            <th></th>
+        </tr>
+
+        @for (int i = 0; i < Model.Count; i++)
+        {
+            var item = Model[i];
+            <tr>
+                <td>
+                    @Html.HiddenFor(x => Model[i].Id)
+                    @Html.CheckBoxFor(x => Model[i].IsSelected)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.ActionLink("Details", "Details", "Session", new { id = item.Id }, null)
+                </td>
+            </tr>
+        }
+
+    </table>
+
+    <button type="submit" class="btn btn-danger">Register for Selected Sessions</button>
+    <span>&nbsp;</span>
+    @(Html.ActionLink("Clear Selections", "Index", "Session", null, new { @class = "btn btn-warning" }));
+    <span>&nbsp;</span>
+    @(Html.ActionLink("View Registered Sessions", "Schedule", "Session", null, new { @class = "btn btn-success" }));
+}

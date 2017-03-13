@@ -8,9 +8,13 @@ namespace WSAD_Project.Models.Data
 {
     public class WSADDbContext : DbContext
     {
-        public DbSet<User> Users { get; set; }
+        public DbSet<PresenterSession> PresenterSessions { get; set; }
+        public DbSet<Role> Roles { get; set; }
         public DbSet<Session> Sessions { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<UserRole> UserRoles { get; set; }
         public DbSet<UserSession> UserSessions { get; set; }
+
 
     }
 }

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 using WSAD_Project.Models.Data;
 
-namespace WSAD_Project.Models.ViewModels.ManageSession
+namespace WSAD_Project.Models.ViewModels.Session
 {
     public class SessionRegistrationViewModel
     {
@@ -13,7 +13,7 @@ namespace WSAD_Project.Models.ViewModels.ManageSession
 
         }
 
-        public SessionRegistrationViewModel(Session sessionDTO)
+        public SessionRegistrationViewModel(Models.Data.Session sessionDTO)
         {
             Id = sessionDTO.Id;
             Title = sessionDTO.Title;
