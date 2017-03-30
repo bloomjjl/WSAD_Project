@@ -47,8 +47,9 @@ namespace WSAD_Project.Controllers
                 if (sessionDTO == null) { return Redirect("Index"); }
 
                 int remainingSeats = GetAvailableSeatsForSessionFromDatabase(sessionDTO);
+                List<string> presenterNames = GetListOfPresenterNamesForSessionFromDatabase(sessionDTO);
 
-                return View(new SessionDetailsViewModel(sessionDTO, remainingSeats));
+                return View(new SessionDetailsViewModel(sessionDTO, remainingSeats, presenterNames));
             }
         }
 
@@ -118,6 +119,29 @@ namespace WSAD_Project.Controllers
                 if(dbSessions == null) { return 0; }
                 
                 return sessionDTO.Occupancy - dbSessions.Count();
+            }
+        }
+
+
+
+        public List<string> GetListOfPresenterNamesForSessionFromDatabase(Models.Data.Session sessionDTO)
+        {
+            using (WSADDbContext context = new WSADDbContext())
+            {
+                // get session presenters from database
+                List<Models.Data.PresenterSession> dbPresenters = context.PresenterSessions.Where(x => x.SessionId == sessionDTO.Id).ToList();
+
+                if (dbPresenters == null) { return new List<string>(); }
+
+                // store the names of each presenter for session
+                List<string> presenterNames = new List<string>();
+                foreach (var presenterDTO in dbPresenters)
+                {
+                    presenterNames.Add(presenterDTO.User.FirstName + " " + presenterDTO.User.LastName);
+                }
+
+                // return list of presenter names
+                return presenterNames;
             }
         }
 
