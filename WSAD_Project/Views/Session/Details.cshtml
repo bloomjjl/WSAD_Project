@@ -61,17 +61,17 @@
             <dt>
                 @Html.DisplayNameFor(model => model.PresenterNames)
             </dt>
-            @if (Model.PresenterNames.Count > 0)
-            {
-                <dd>
-                    @for (int i = 0; i < Model.PresenterNames.Count(); i++)
+            <dd>
+                @if (Model.PresenterNames.Count > 0)
+                {
+                    for (int i = 0; i < Model.PresenterNames.Count(); i++)
                     {
                         @* display presenter names on their own line *@
                         if (i > 0) { <br /> }
                         @Html.DisplayFor(model => model.PresenterNames[i])
                     }
-                </dd>
-            }
+                }
+            </dd>
 
             <dt>
                 @Html.DisplayNameFor(model => model.Occupancy)
