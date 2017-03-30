@@ -1,0 +1,36 @@
+﻿@model WSAD_Project.Areas.Admin.Models.ViewModels.ManageSession.UserListBySessionViewModel
+
+@{
+    ViewBag.Title = "UserListBySession";
+}
+
+<h2>Registered Users For Session: @Model.SessionTitle</h2>
+
+<div>
+    <label>Register Another User For Session:</label>
+    @Html.TextBox("UserSearch", null, new { placeholder = "Type User Name To Search", @class = "form-control" })
+</div>
+
+<table class="table">
+    <tr>
+        <th>
+            User
+        </th>
+        <th></th>
+    </tr>
+
+    @for (int i = 0; i < Model.UserItems.Count(); i++)
+    {
+        var item = Model.UserItems[i];
+        <tr>
+            <td>
+                @Html.HiddenFor(x => Model.UserItems[i].UserId)
+                @Html.DisplayFor(x => Model.UserItems[i].UserName)
+            </td>
+            <td>
+                @Html.ActionLink("Delete", "RemoveSessionFromUser", "ManageSessions", new { area = "Admin", userId = item.UserId, sessionId = Model.SessionId }, null)
+            </td>
+        </tr>
+    }
+
+</table>

@@ -98,7 +98,7 @@ namespace WSAD_Project.Areas.Admin.Controllers
         [HttpGet]
         public ActionResult Edit(int? id = 0)
         {
-            int intSessionId = GetUserIdAsInteger(id);
+            int intSessionId = ValidateAndGetNullableIntegerAsInteger(id);
 
             // setup a DbContext
             EditManageSessionViewModel sessionVM;
@@ -154,7 +154,7 @@ namespace WSAD_Project.Areas.Admin.Controllers
 
 
 
-        public int GetUserIdAsInteger(int? id)
+        public int ValidateAndGetNullableIntegerAsInteger(int? id)
         {
             int intId = 0;
             if (int.TryParse(id.ToString(), out intId))
@@ -214,6 +214,152 @@ namespace WSAD_Project.Areas.Admin.Controllers
 
 
 
+
+        public ActionResult SessionListByUser(int? userId)
+        {
+            // validate parameters
+            int intUserId = ValidateAndGetNullableIntegerAsInteger(userId);
+            if (intUserId <= 0)
+            {
+                return this.HttpNotFound("Invalid Input Parameters");
+            }
+
+            string username = this.User.Identity.Name;
+            SessionListByUserViewModel userSessionsVM = new SessionListByUserViewModel(intUserId, username);
+            userSessionsVM.SessionItems = new List<SessionItem>();
+
+            List<UserSession> dbUserSessions;
+
+            // get list of sessions for current user
+            using (WSADDbContext context = new WSADDbContext())
+            {
+                dbUserSessions = context.UserSessions
+                    .Where(row => row.UserId == intUserId)
+                    .ToList();
+
+                // convert to viewModel
+                if (dbUserSessions != null && dbUserSessions.Count > 0)
+                {                       
+                    foreach (var userSessionDTO in dbUserSessions)
+                    {
+                        userSessionsVM.SessionItems.Add(new SessionItem()
+                        {
+                            SessionId = userSessionDTO.SessionId,
+                            SessionTitle = userSessionDTO.Session.Title
+                        });
+                    }
+
+                    return View(userSessionsVM);
+                }
+            }
+
+            return View(userSessionsVM);
+        }
+
+
+
+        public ActionResult RemoveUserFromSession (int? userId, int? sessionId)
+        {
+            // validate parameters
+            int intUserId = ValidateAndGetNullableIntegerAsInteger(userId);
+            int intSessionId = ValidateAndGetNullableIntegerAsInteger(sessionId);
+
+            // remove user from session
+            using (WSADDbContext context = new WSADDbContext())
+            {
+                // get user session
+                UserSession userSessionDTO = context.UserSessions
+                    .Where(x => x.UserId == intUserId)
+                    .Where(x => x.SessionId == intSessionId)
+                    .FirstOrDefault();
+
+                // remove user from session
+                context.UserSessions.Remove(userSessionDTO);
+
+                // update database
+                context.SaveChanges();
+            }
+
+            // update view to user
+            return RedirectToAction("SessionListByUser", new { userId = intUserId });
+        }
+
+
+
+
+        public ActionResult UserListBySession(int? sessionId)
+        {
+            // validate parameters
+            int intSessionId = ValidateAndGetNullableIntegerAsInteger(sessionId);
+            if (intSessionId <= 0)
+            {
+                return this.HttpNotFound("Invalid Input Parameters");
+            }
+
+            UserListBySessionViewModel sessionUsersVM;
+            
+            using (WSADDbContext context = new WSADDbContext())
+            {
+                Session sessionDTO = context.Sessions.FirstOrDefault(x => x.Id == intSessionId);
+                if (sessionDTO == null) { return RedirectToAction("Index"); }
+                sessionUsersVM = new UserListBySessionViewModel(intSessionId, sessionDTO.Title);
+            }
+
+            sessionUsersVM.UserItems = new List<UserItem>();
+            List<UserSession> dbSessionUsers;
+
+            // get and list sessions
+            using (WSADDbContext context = new WSADDbContext())
+            {
+                dbSessionUsers = context.UserSessions
+                    .Where(row => row.SessionId == intSessionId)
+                    .ToList();
+
+                // convert to viewModel
+                if (dbSessionUsers != null && dbSessionUsers.Count > 0)
+                {
+                    foreach (var sessionUserDTO in dbSessionUsers)
+                    {
+                        sessionUsersVM.UserItems.Add(new UserItem()
+                        {
+                            UserId = sessionUserDTO.UserId,
+                            UserName = sessionUserDTO.User.Username
+                        });
+                    }
+
+                    return View(sessionUsersVM);
+                }
+            }
+
+            return View(sessionUsersVM);
+        }
+
+
+        public ActionResult RemoveSessionFromUser(int? userId, int? sessionId)
+        {
+            // validate parameters
+            int intUserId = ValidateAndGetNullableIntegerAsInteger(userId);
+            int intSessionId = ValidateAndGetNullableIntegerAsInteger(sessionId);
+
+            // remove user from session
+            using (WSADDbContext context = new WSADDbContext())
+            {
+                // get user session
+                UserSession sessionUserDTO = context.UserSessions
+                    .Where(x => x.UserId == intUserId)
+                    .Where(x => x.SessionId == intSessionId)
+                    .FirstOrDefault();
+
+                // remove user from session
+                context.UserSessions.Remove(sessionUserDTO);
+
+                // update database
+                context.SaveChanges();
+            }
+
+            // update view to user
+            return RedirectToAction("UserListBySession", new { sessionId = intSessionId });
+        }
 
     }
 }

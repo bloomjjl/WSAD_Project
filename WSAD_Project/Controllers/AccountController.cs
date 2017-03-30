@@ -402,5 +402,25 @@ namespace WSAD_Project.Controllers
         }
 
 
+
+        public int GetUserIdForUsernameFromDatabase(string username)
+        {
+            try
+            {
+                using (WSADDbContext context = new WSADDbContext())
+                {
+                    // Search for user
+                    WSAD_Project.Models.Data.User userDTO = context.Users.FirstOrDefault(x => x.Username == username);
+                    if (userDTO == null) { return 0; }
+                    else { return userDTO.Id; }
+                }
+            }
+            catch
+            {
+                return 0;
+            }
+        }
+
+
     }
 }

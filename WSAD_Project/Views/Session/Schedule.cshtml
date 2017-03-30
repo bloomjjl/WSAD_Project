@@ -6,6 +6,24 @@
 
 <h2>My Session Schedule</h2>
 
+@if (TempData["ScheduleSessionMessage"] != null)
+{
+    if (TempData["ScheduleSessionMessage"].ToString() == "SUCCESS")
+    {
+        <div class="alert alert-success">
+            <span class="glyphicon glyphicon-ok-circle"></span>
+            SUCCESS: YOUR SESSION INFORMATION HAS BEEN UPDATED
+        </div>
+    }
+    else if (TempData["ScheduleSessionMessage"].ToString() != string.Empty)
+    {
+        <div class="alert alert-danger">
+            <span class="glyphicon glyphicon-remove-circle"></span>
+            PROBLEM: @TempData["ScheduleSessionMessage"]
+        </div>
+    }
+}
+
 @using (Html.BeginForm("RemoveSessions", "Session"))
 {
     @Html.AntiForgeryToken()

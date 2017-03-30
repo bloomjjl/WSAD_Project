@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using WSAD_Project.Models.Data;
 using WSAD_Project.Models.ViewModels.Session;
+using WSAD_Project.Models.ViewModels.ShoppingCart;
 
 namespace WSAD_Project.Controllers
 {
@@ -66,7 +67,8 @@ namespace WSAD_Project.Controllers
             }
 
             // Capture logged in User
-            int userId = GetUserIdForUsernameFromDatabase(this.User.Identity.Name);
+            AccountController account = new AccountController();
+            int userId = account.GetUserIdForUsernameFromDatabase(this.User.Identity.Name);
 
             // update database with selected items
             if (UpdateSingleSessionUserRegisteredForInDatabase(sessionVM, userId))
@@ -75,7 +77,7 @@ namespace WSAD_Project.Controllers
             }
             else
             {
-                TempData["RegisterSessionMessage"] = "PROBLEM";
+                TempData["RegisterSessionMessage"] = "SESSION WAS NOT UPDATED";
             }
 
             return Redirect("Index");
@@ -147,8 +149,10 @@ namespace WSAD_Project.Controllers
         [HttpGet]
         public ActionResult Schedule()
         {
-            // make sure user is logged in
-            int userId = GetUserIdForUsernameFromDatabase(this.User.Identity.Name);
+            // Capture logged in User
+            AccountController account = new AccountController();
+            int userId = account.GetUserIdForUsernameFromDatabase(this.User.Identity.Name);
+
             if (userId == 0)
             {
                 return RedirectToAction("Login", "Account");
@@ -170,21 +174,22 @@ namespace WSAD_Project.Controllers
             // stop if no sessions have been selected
             if (sessionVM.Id == 0)
             {
-                TempData["RemoveSessionMessage"] = "";
+                TempData["ScheduleSessionMessage"] = "";
                 return Redirect("Schedule");
             }
 
             // Capture logged in User
-            int userId = GetUserIdForUsernameFromDatabase(this.User.Identity.Name);
+            AccountController account = new AccountController();
+            int userId = account.GetUserIdForUsernameFromDatabase(this.User.Identity.Name);
 
             // update database with selected items
             if (UpdateSingleSessionUserCanceledInDatabase(sessionVM, userId))
             {
-                TempData["RemoveSessionMessage"] = "SUCCESS";
+                TempData["ScheduleSessionMessage"] = "SUCCESS";
             }
             else
             {
-                TempData["RemoveSessionMessage"] = "PROBLEM";
+                TempData["ScheduleSessionMessage"] = "SESSION WAS NOT UPDATED";
             }
 
             return Redirect("Schedule");
@@ -197,27 +202,30 @@ namespace WSAD_Project.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult RemoveSessions(List<SessionScheduleViewModel> collectionsOfSessions)
         {
+            // validate parameters
+            if (collectionsOfSessions == null) { return RedirectToAction("Index"); }
             // filter collectionOfSessions to find the Selected Items only
             var vmSessionsSelected = collectionsOfSessions.Where(x => x.IsSelected == true).ToList();
 
             // stop if no sessions have been selected
             if (vmSessionsSelected.Count == 0)
             {
-                TempData["RemoveSessionMessage"] = "";
+                TempData["ScheduleSessionMessage"] = "NO SESSIONS SELECTED";
                 return Redirect("Schedule");
             }
 
             // Capture logged in User
-            int userId = GetUserIdForUsernameFromDatabase(this.User.Identity.Name);
+            AccountController account = new AccountController();
+            int userId = account.GetUserIdForUsernameFromDatabase(this.User.Identity.Name);
 
             // update database with selected items
             if (UpdateSessionsUserCanceledInDatabase(vmSessionsSelected, userId))
             {
-                TempData["RemoveSessionMessage"] = "SUCCESS";
+                TempData["ScheduleSessionMessage"] = "SUCCESS";
             }
             else
             {
-                TempData["RemoveSessionMessage"] = "PROBLEM";
+                TempData["ScheduleSessionMessage"] = "SESSION WAS NOT UPDATED";
             }
 
             return Redirect("Schedule");
@@ -329,8 +337,9 @@ namespace WSAD_Project.Controllers
         [Authorize]
         public ActionResult Registration()
         {
-            // make sure user is logged in
-            int userId = GetUserIdForUsernameFromDatabase(this.User.Identity.Name);
+            // Capture logged in User
+            AccountController account = new AccountController();
+            int userId = account.GetUserIdForUsernameFromDatabase(this.User.Identity.Name);
 
             if (userId == 0)
             {
@@ -348,59 +357,37 @@ namespace WSAD_Project.Controllers
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public ActionResult Registration(List<SessionViewModel> collectionsOfSessions)
+        public ActionResult Registration(List<ShoppingCartViewModel> collectionsOfSessions)
         {
+            // validate parameters
+            if (collectionsOfSessions == null) { return RedirectToAction("Index"); }
+
             // filter collectionOfSessions to find the Selected Items only
             var vmSessionsSelected = collectionsOfSessions.Where(x => x.IsSelected == true).ToList();
 
             // stop if no sessions have been selected
             if (vmSessionsSelected.Count == 0)
             {
-                TempData["RegisterSessionMessage"] = "";
-                return Redirect("Index");
+                TempData["ShoppingCartMessage"] = "NO SESSIONS SELECTED";
+                return RedirectToAction("Index", "ShoppingCart");
             }
 
             // Capture logged in User
-            int userId = GetUserIdForUsernameFromDatabase(this.User.Identity.Name);
+            AccountController account = new AccountController();
+            int userId = account.GetUserIdForUsernameFromDatabase(this.User.Identity.Name);
 
             // update database with selected items
-            if (UpdateSessionsUserRegisteredForInDatabase(vmSessionsSelected, userId))
+            List<string> sessionsNotUpdated = UpdateSessionsUserRegisteredForInDatabase(vmSessionsSelected, userId);
+            if (sessionsNotUpdated.Count == 0)
             {
-                TempData["RegisterSessionMessage"] = "SUCCESS";
+                TempData["ShoppingCartMessage"] = "SUCCESS";
             }
             else
             {
-                TempData["RegisterSessionMessage"] = "PROBLEM";
+                TempData["ShoppingCartMessage"] = "SOME SESSIONS HAVE ALREADY BEEN REGISTERED AND WERE NOT UPDATED";
             }
 
-            return Redirect("Index");
-        }
-
-
-
-        private int GetUserIdForUsernameFromDatabase(string username)
-        {
-            try
-            {
-                using (WSADDbContext context = new WSADDbContext())
-                {
-                    // Search for user
-                    Models.Data.User userDTO = context.Users.FirstOrDefault(x => x.Username == username);
-
-                    if (userDTO == null)
-                    {
-                        return 0;
-                    }
-                    else
-                    {
-                        return userDTO.Id;
-                    }
-                }
-            }
-            catch
-            {
-                return 0;
-            }
+            return RedirectToAction("Index", "ShoppingCart");
         }
 
 
@@ -436,9 +423,10 @@ namespace WSAD_Project.Controllers
 
 
 
-        private bool UpdateSessionsUserRegisteredForInDatabase(IEnumerable<SessionViewModel> vmSessionsSelected, int userId)
+        private List<string> UpdateSessionsUserRegisteredForInDatabase(IEnumerable<ShoppingCartViewModel> vmSessionsSelected, int userId)
         {
-            bool sessionsUpdated = false;
+            int count = 0;
+            List<string> sessionsNotUpdated = new List<string>();
 
             using (WSADDbContext context = new WSADDbContext())
             {
@@ -446,8 +434,8 @@ namespace WSAD_Project.Controllers
                 foreach (var vmSession in vmSessionsSelected)
                 {
                     // update database with selected items
-                    int sessionId = vmSession.Id;
-                    var dtoUserSession = context.UserSessions.Where(x => x.UserId == userId).FirstOrDefault(x => x.SessionId == vmSession.Id);
+                    int sessionId = context.ShoppingCarts.Where(x=>x.Id==vmSession.ShoppingCartId).Select(x=>x.SessionId).FirstOrDefault();
+                    var dtoUserSession = context.UserSessions.Where(x => x.UserId == userId).FirstOrDefault(x => x.SessionId == sessionId);
 
                     // make sure user is not already signed up for session
                     if (dtoUserSession == null)
@@ -457,16 +445,30 @@ namespace WSAD_Project.Controllers
                             UserId = userId,
                             SessionId = sessionId
                         });
-                    }
 
-                }
+                        // remove session from shopping cart in database
+                        ShoppingCart dtoShoppintCart = context.ShoppingCarts.FirstOrDefault(x => x.Id == vmSession.ShoppingCartId);
+                        if (dtoShoppintCart != null) { context.ShoppingCarts.Remove(dtoShoppintCart); }
+
+                        // keep track of number of sessions updated
+                        count += 1;
+                    }
+                    else
+                    {
+                        sessionsNotUpdated.Add(dtoUserSession.Session.Title);
+                    }
+                 }
 
                 context.SaveChanges();
-                sessionsUpdated = true;
             }
 
-            // 
-            return sessionsUpdated;
+            // were any records updated
+            if (count > 0)
+            {
+                return sessionsNotUpdated;
+            }
+
+            return sessionsNotUpdated;
         }
 
 

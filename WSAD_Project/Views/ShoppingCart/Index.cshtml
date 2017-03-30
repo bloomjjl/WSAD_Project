@@ -1,0 +1,66 @@
+﻿@model List<WSAD_Project.Models.ViewModels.ShoppingCart.ShoppingCartViewModel>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Session Shopping Cart</h2>
+
+@if (TempData["ShoppingCartMessage"] != null)
+{
+    if (TempData["ShoppingCartMessage"].ToString() == "SUCCESS")
+    {
+        <div class="alert alert-success">
+            <span class="glyphicon glyphicon-ok-circle"></span>
+            SUCCESS: YOUR SESSION INFORMATION HAS BEEN UPDATED
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-danger">
+            <span class="glyphicon glyphicon-remove-circle"></span>
+            PROBLEM: @TempData["ShoppingCartMessage"]
+        </div>
+    }
+}
+
+@using (Html.BeginForm("Registration", "Session"))
+{
+    @Html.AntiForgeryToken()
+
+    <button type="submit" class="btn btn-danger">Register For Selected Sessions</button>
+    <span>&nbsp;</span>
+    @(Html.ActionLink("Back to List", "Index", "Session", null, new { @class = "btn btn-success" }));
+
+    <table class="table">
+        <tr>
+            <th>
+                &nbsp;
+            </th>
+            <th>
+                Title
+            </th>
+            <th></th>
+        </tr>
+        
+   @for (int i = 0; i < Model.Count; i++)
+   {
+       var item = Model[i];
+
+        <tr>
+            <td>
+                @Html.HiddenFor(x => Model[i].ShoppingCartId)
+                @Html.CheckBoxFor(x => Model[i].IsSelected)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Session.Title)
+            </td>
+            <td>
+                @Html.ActionLink("Delete", "Delete", "ShoppingCart", new { shoppingCartId = item.ShoppingCartId }, null)
+            </td>
+        </tr>
+    }
+
+    </table>
+
+}

@@ -33,6 +33,6 @@ namespace WSAD_Project.Models.Data
             }
         }
 
-        //public virtual ICollection<UserSession> UserSessions { get; set; }
+        //public virtual User User { get; set; }
     }
 }

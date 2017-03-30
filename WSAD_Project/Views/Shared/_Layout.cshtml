@@ -21,14 +21,20 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li>@Html.ActionLink("Home", "Index", "Home", new { area = "" }, null)</li>
-                    <li>@Html.ActionLink("About", "About", "Home", new { area = "" }, null)</li>
-                    <li>@Html.ActionLink("Contact", "Contact", "Home", new { area = "" }, null)</li>
                     <li>@Html.ActionLink("Session", "Index", "Session", new { area = "" }, null)</li>
+                    <li>@Html.ActionLink("Shopping Cart", "Index", "ShoppingCart", new { area = "" }, null)</li>
                     @if (User.IsInRole("Admin"))
                     {
-                        <li>@Html.ActionLink("Manage Users", "Index", "Admin/ManageUsers", new { area = "" }, null)</li>
-                        <li>@Html.ActionLink("Manage Sessions", "Index", "Admin/ManageSessions", new { area = "" }, null)</li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Admin <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li>@Html.ActionLink("Manage Users", "Index", "ManageUsers", new { area = "Admin" }, null)</li>
+                                <li>@Html.ActionLink("Manage Sessions", "Index", "ManageSessions", new { area = "Admin" }, null)</li>
+                            </ul>
+                        </li>
                     }
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
                     @if (Request.IsAuthenticated)
                     {
                         <li>@Html.ActionLink("Logout", "Logout", "Account", new { area = "" }, null)</li>
@@ -39,7 +45,8 @@
                         <li>@Html.ActionLink("Login", "Login", "Account", new { area = "" }, null)</li>
                     }
                 </ul>
-            </div>
+
+</div>
         </div>
     </div>
     <div class="container body-content">

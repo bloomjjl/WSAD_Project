@@ -40,7 +40,8 @@
                     @Html.DisplayFor(modelItem => item.Title)
                 </td>
                 <td>
-                    @Html.ActionLink("Edit", "Edit", new { id = item.Id })
+                    @Html.ActionLink("Edit", "Edit", "ManageSessions", new { id = item.Id }) | 
+                    @Html.ActionLink("Registered Users", "UserListBySession", "ManageSessions", new { area = "Admin", sessionId = item.Id }, null)
                 </td>
             </tr>
         }
@@ -50,4 +51,4 @@
     <button type="submit" class="btn btn-danger">Delete Selected Sessions</button>
     <span>&nbsp;</span>
     @(Html.ActionLink("Create New Session", "Create", "ManageSessions", null, new { @class = "btn btn-success" }));
-}
+    }
