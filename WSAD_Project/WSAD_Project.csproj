@@ -174,7 +174,7 @@
     <Compile Include="Areas\Admin\Controllers\ManageUserSessionsController.cs" />
     <Compile Include="Areas\Admin\Models\ViewModels\ManageSession\CreateManageSessionViewModel.cs" />
     <Compile Include="Areas\Admin\Models\ViewModels\ManageSession\EditManageSessionViewModel.cs" />
-    <Compile Include="Areas\Admin\Models\ViewModels\ManageSession\SessionListByUserViewModel.cs" />
+    <Compile Include="Areas\Admin\Models\ViewModels\ManageUser\SessionListByUserViewModel.cs" />
     <Compile Include="Areas\Admin\Models\ViewModels\ManageSession\UserListBySessionViewModel.cs" />
     <Compile Include="Areas\Admin\Models\ViewModels\ManageUser\CreateManageUserViewModel.cs" />
     <Compile Include="Areas\Admin\Models\ViewModels\ManageUser\EditManageUserViewModel.cs" />
@@ -202,6 +202,7 @@
     <Compile Include="Models\ViewModels\Account\LoginUserViewModel.cs" />
     <Compile Include="Models\ViewModels\Account\UserNavPartialViewModel.cs" />
     <Compile Include="Models\ViewModels\Account\UserProfileViewModel.cs" />
+    <Compile Include="Models\ViewModels\SessionSearch\SessionSearchViewModel.cs" />
     <Compile Include="Models\ViewModels\Session\ScheduledSessionDetailsViewModel.cs" />
     <Compile Include="Models\ViewModels\Session\SessionRegistrationViewModel.cs" />
     <Compile Include="Models\ViewModels\Session\SessionScheduleViewModel.cs" />
@@ -278,7 +279,7 @@
     <Content Include="Areas\Admin\Views\ManageUsers\Create.cshtml" />
     <Content Include="Areas\Admin\Views\ManageSessions\Create.cshtml" />
     <Content Include="Areas\Admin\Views\ManageSessions\Edit.cshtml" />
-    <Content Include="Areas\Admin\Views\ManageSessions\SessionListByUser.cshtml" />
+    <Content Include="Areas\Admin\Views\ManageUsers\SessionListByUser.cshtml" />
     <Content Include="Areas\Admin\Views\ManageSessions\UserListBySession.cshtml" />
     <None Include="Scripts\jquery-1.12.4.intellisense.js" />
     <Content Include="Scripts\jquery-1.12.4.js" />
@@ -325,7 +326,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Areas\Admin\Views\ManageUserSessions\" />
-    <Folder Include="Models\ViewModels\SessionSearch\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

@@ -31,9 +31,9 @@ namespace WSAD_Project.Controllers
                 }
 
                 // load ViewModel
-                foreach (var user in matches)
+                foreach (var userDTO in matches)
                 {
-                    userSearchVM.Add(new UserSearchViewModel(user));
+                    userSearchVM.Add(new UserSearchViewModel(userDTO));
                 }
 
                 return userSearchVM;

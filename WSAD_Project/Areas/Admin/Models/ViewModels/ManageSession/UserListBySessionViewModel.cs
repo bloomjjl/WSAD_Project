@@ -10,10 +10,10 @@ namespace WSAD_Project.Areas.Admin.Models.ViewModels.ManageSession
     {
         public UserListBySessionViewModel() { }
 
-        public UserListBySessionViewModel(int sessionId, string sessionTitle)
+        public UserListBySessionViewModel(Session sessionDTO)
         {
-            SessionId = sessionId;
-            SessionTitle = sessionTitle;
+            SessionId = sessionDTO.Id;
+            SessionTitle = sessionDTO.Title;
         }
 
 

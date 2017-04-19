@@ -4,21 +4,25 @@ using System.Linq;
 using System.Web;
 using WSAD_Project.Models.Data;
 
-namespace WSAD_Project.Areas.Admin.Models.ViewModels.ManageSession
+namespace WSAD_Project.Areas.Admin.Models.ViewModels.ManageUser
 {
     public class SessionListByUserViewModel
     {
         public SessionListByUserViewModel() { }
 
-        public SessionListByUserViewModel(int userId, string userName)
+        public SessionListByUserViewModel(User userDTO)
         {
-            UserId = userId;
-            UserName = UserName;
+            UserId = userDTO.Id;
+            UserName = userDTO.Username;
+            FirstName = userDTO.FirstName;
+            LastName = userDTO.LastName;
         }
 
 
         public int UserId { get; private set; }
         public string UserName { get; private set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
         public List<SessionItem> SessionItems { get; set; }
     }
 
@@ -26,5 +30,6 @@ namespace WSAD_Project.Areas.Admin.Models.ViewModels.ManageSession
     {
         public int SessionId { get; set; }
         public string SessionTitle { get; set; }
+        public DateTime DateRegistered { get; set; }
     }
 }

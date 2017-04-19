@@ -275,48 +275,6 @@ namespace WSAD_Project.Areas.Admin.Controllers
 
 
 
-        public ActionResult SessionListByUser(int? userId)
-        {
-            // validate parameters
-            int intUserId = ValidateAndGetNullableIntegerAsInteger(userId);
-            if (intUserId <= 0)
-            {
-                return this.HttpNotFound("Invalid Input Parameters");
-            }
-
-            string username = this.User.Identity.Name;
-            SessionListByUserViewModel userSessionsVM = new SessionListByUserViewModel(intUserId, username);
-            userSessionsVM.SessionItems = new List<SessionItem>();
-
-            List<UserSession> dbUserSessions;
-
-            // get list of sessions for current user
-            using (WSADDbContext context = new WSADDbContext())
-            {
-                dbUserSessions = context.UserSessions
-                    .Where(row => row.UserId == intUserId)
-                    .ToList();
-
-                // convert to viewModel
-                if (dbUserSessions != null && dbUserSessions.Count > 0)
-                {                       
-                    foreach (var userSessionDTO in dbUserSessions)
-                    {
-                        userSessionsVM.SessionItems.Add(new SessionItem()
-                        {
-                            SessionId = userSessionDTO.SessionId,
-                            SessionTitle = userSessionDTO.Session.Title
-                        });
-                    }
-
-                    return View(userSessionsVM);
-                }
-            }
-
-            return View(userSessionsVM);
-        }
-
-
 
         public ActionResult AddUserToSession (int? sessionId, int? userId)
         {
@@ -363,6 +321,54 @@ namespace WSAD_Project.Areas.Admin.Controllers
 
             // update view
             return RedirectToAction("UserListBySession", new { sessionId = intSessionId });
+        }
+
+
+
+        public ActionResult AddSessionToUser(int? userId, int? sessionId)
+        {
+            // validate parameters
+            int intUserId = ValidateAndGetNullableIntegerAsInteger(userId);
+            int intSessionId = ValidateAndGetNullableIntegerAsInteger(sessionId);
+
+            if (intUserId <= 0 || intSessionId <= 0)
+            { return this.HttpNotFound("Invalid Input Parameters"); }
+
+            using (WSADDbContext context = new WSADDbContext())
+            {
+                // get Session & User
+                Session sessinoDTO = context.Sessions.FirstOrDefault(x => x.Id == intSessionId);
+                User userDTO = context.Users.FirstOrDefault(x => x.Id == intUserId);
+
+                // verify Session & User
+                if (sessinoDTO == null) { return this.HttpNotFound("Invalid Input Paramenters"); }
+                if (userDTO == null) { return this.HttpNotFound("Invalid Input Paramenters"); }
+
+                // check for existing user for session
+                UserSession userSessionDTO = context.UserSessions
+                    .Where(x => x.UserId == intUserId)
+                    .Where(x => x.SessionId == intSessionId)
+                    .FirstOrDefault();
+
+                if (userSessionDTO == null)
+                {
+                    // build new user session
+                    UserSession newUserSession = new UserSession()
+                    {
+                        SessionId = intSessionId,
+                        UserId = intUserId,
+                        CreateDate = DateTime.Now
+                    };
+
+                    context.UserSessions.Add(newUserSession);
+
+                    // save changes
+                    context.SaveChanges();
+                }
+            }
+
+            // update view
+            return RedirectToAction("SessionListByUser", "ManageSessions", new { userId = intUserId });
         }
 
 
@@ -436,20 +442,17 @@ namespace WSAD_Project.Areas.Admin.Controllers
             }
 
             UserListBySessionViewModel sessionUsersVM;
+            List<UserSession> dbSessionUsers;
             
             using (WSADDbContext context = new WSADDbContext())
             {
+                // store session information
                 Session sessionDTO = context.Sessions.FirstOrDefault(x => x.Id == intSessionId);
                 if (sessionDTO == null) { return RedirectToAction("Index"); }
-                sessionUsersVM = new UserListBySessionViewModel(intSessionId, sessionDTO.Title);
-            }
+                sessionUsersVM = new UserListBySessionViewModel(sessionDTO);
 
-            sessionUsersVM.UserItems = new List<UserItem>();
-            List<UserSession> dbSessionUsers;
-
-            // get and list sessions
-            using (WSADDbContext context = new WSADDbContext())
-            {
+                // get list of sessions
+                sessionUsersVM.UserItems = new List<UserItem>();
                 dbSessionUsers = context.UserSessions
                     .Include("User")
                     .Where(row => row.SessionId == intSessionId)
@@ -479,31 +482,6 @@ namespace WSAD_Project.Areas.Admin.Controllers
 
 
 
-        public ActionResult RemoveSessionFromUser(int? userId, int? sessionId)
-        {
-            // validate parameters
-            int intUserId = ValidateAndGetNullableIntegerAsInteger(userId);
-            int intSessionId = ValidateAndGetNullableIntegerAsInteger(sessionId);
-
-            // remove user from session
-            using (WSADDbContext context = new WSADDbContext())
-            {
-                // get user session
-                UserSession sessionUserDTO = context.UserSessions
-                    .Where(x => x.UserId == intUserId)
-                    .Where(x => x.SessionId == intSessionId)
-                    .FirstOrDefault();
-
-                // remove user from session
-                context.UserSessions.Remove(sessionUserDTO);
-
-                // update database
-                context.SaveChanges();
-            }
-
-            // update view to user
-            return RedirectToAction("UserListBySession", new { sessionId = intSessionId });
-        }
 
     }
 }
