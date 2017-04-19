@@ -1,19 +1,19 @@
-﻿@model WSAD_Project.Areas.Admin.Models.ViewModels.ManageSession.UserListBySessionViewModel
+﻿@model WSAD_Project.Areas.Admin.Models.ViewModels.ManageSession.PresenterListBySessionViewModel
 
 @{
-    ViewBag.Title = "UserListBySession";
+    ViewBag.Title = "PresenterListBySession";
 }
 
 <div>
-    <h2>Registered Users For Session:</h2>
+    <h2>Users Presenting For Session:</h2>
     <h3>@Model.SessionTitle</h3>
 </div>
 
 <span>&nbsp;</span>
 
 <div>
-    <label>Register Another User For Session:</label>
-    @Html.TextBox("UserSearch", null, new { placeholder = "Type User Name To Search", @class = "form-control" })
+    <label>Register Another Presesnter For Session:</label>
+    @Html.TextBox("PresenterSearch", null, new { placeholder = "Type User Name To Search", @class = "form-control" })
 </div>
 
 <span>&nbsp;</span>
@@ -34,26 +34,26 @@
         </th>
         <th></th>
     </tr>
-
-    @for (int i = 0; i < Model.SessionUserItems.Count(); i++)
+    
+    @for (int i = 0; i < Model.SessionPresenterItems.Count(); i++)
     {
-        var item = Model.SessionUserItems[i];
+        var item = Model.SessionPresenterItems[i];
         <tr>
             <td>
-                @Html.HiddenFor(x => Model.SessionUserItems[i].UserId)
-                @Html.DisplayFor(x => Model.SessionUserItems[i].UserName)
+                @Html.HiddenFor(x => Model.SessionPresenterItems[i].UserId)
+                @Html.DisplayFor(x => Model.SessionPresenterItems[i].UserName)
             </td>
             <td>
-                @Html.DisplayFor(x => Model.SessionUserItems[i].FirstName)
+                @Html.DisplayFor(x => Model.SessionPresenterItems[i].FirstName)
             </td>
             <td>
-                @Html.DisplayFor(x => Model.SessionUserItems[i].LastName)
+                @Html.DisplayFor(x => Model.SessionPresenterItems[i].LastName)
             </td>
             <td>
-                @Html.DisplayFor(x => Model.SessionUserItems[i].DateRegistered)
+                @Html.DisplayFor(x => Model.SessionPresenterItems[i].DateRegistered)
             </td>
             <td>
-                @Html.ActionLink("Delete", "RemoveUserFromSession", "ManageSessions", new { area = "Admin", userId = item.UserId, sessionId = Model.SessionId }, null)
+                @Html.ActionLink("Delete", "RemovePresenterFromSession", "ManageSessions", new { area = "Admin", userId = item.UserId, sessionId = Model.SessionId }, null)
             </td>
         </tr>
     }
@@ -69,13 +69,13 @@
     @Scripts.Render("~/bundles/jqueryui")
     <script>
         $(function() {
-            $("#UserSearch").autocomplete({
-                source: "@(Url.Content("~/api/UserSearch"))",
+            $("#PresenterSearch").autocomplete({
+                source: "@(Url.Content("~/api/PresenterSearch"))",
                 minLength: 1,
                 select: function (event, ui) {
                     var userId = ui.item.UserId;
                     window.location =
-                        "@(Url.Action("AddUserToSession", new { sessionId = Model.SessionId }))" +
+                        "@(Url.Action("AddPresenterToSession", new { sessionId = Model.SessionId }))" +
                         "&userId=" + userId;
                 }
             })

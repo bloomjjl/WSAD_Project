@@ -173,6 +173,7 @@
     <Compile Include="Areas\Admin\Controllers\ManageUsersController.cs" />
     <Compile Include="Areas\Admin\Models\ViewModels\ManageSession\CreateManageSessionViewModel.cs" />
     <Compile Include="Areas\Admin\Models\ViewModels\ManageSession\EditManageSessionViewModel.cs" />
+    <Compile Include="Areas\Admin\Models\ViewModels\ManageSession\PresenterListBySessionViewModel.cs" />
     <Compile Include="Areas\Admin\Models\ViewModels\ManageUser\SessionListByPresenterViewModel.cs" />
     <Compile Include="Areas\Admin\Models\ViewModels\ManageUser\SessionListByUserViewModel.cs" />
     <Compile Include="Areas\Admin\Models\ViewModels\ManageSession\UserListBySessionViewModel.cs" />
@@ -284,6 +285,7 @@
     <Content Include="Areas\Admin\Views\ManageUsers\SessionListByUser.cshtml" />
     <Content Include="Areas\Admin\Views\ManageSessions\UserListBySession.cshtml" />
     <Content Include="Areas\Admin\Views\ManageUsers\SessionListByPresenter.cshtml" />
+    <Content Include="Areas\Admin\Views\ManageSessions\PresenterListBySession.cshtml" />
     <None Include="Scripts\jquery-1.12.4.intellisense.js" />
     <Content Include="Scripts\jquery-1.12.4.js" />
     <Content Include="Scripts\jquery-1.12.4.min.js" />

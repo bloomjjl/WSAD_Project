@@ -6,11 +6,11 @@ using WSAD_Project.Models.Data;
 
 namespace WSAD_Project.Areas.Admin.Models.ViewModels.ManageSession
 {
-    public class UserListBySessionViewModel
+    public class PresenterListBySessionViewModel
     {
-        public UserListBySessionViewModel() { }
+        public PresenterListBySessionViewModel() { }
 
-        public UserListBySessionViewModel(Session sessionDTO)
+        public PresenterListBySessionViewModel(Session sessionDTO)
         {
             SessionId = sessionDTO.Id;
             SessionTitle = sessionDTO.Title;
@@ -19,10 +19,10 @@ namespace WSAD_Project.Areas.Admin.Models.ViewModels.ManageSession
 
         public int SessionId { get; private set; }
         public string SessionTitle { get; private set; }
-        public List<SessionUserItem> SessionUserItems { get; set; }
+        public List<SessionPresenterItem> SessionPresenterItems { get; set; }
     }
 
-    public class SessionUserItem
+    public class SessionPresenterItem
     {
         public int UserId { get; set; }
         public string UserName { get; set; }

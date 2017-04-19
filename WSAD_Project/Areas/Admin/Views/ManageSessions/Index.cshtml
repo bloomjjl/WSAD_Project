@@ -40,8 +40,9 @@
                     @Html.DisplayFor(modelItem => session.Title)
                 </td>
                 <td>
-                    @Html.ActionLink("Edit", "Edit", "ManageSessions", new { sessionId = session.SessionId }, null) | 
-                    @Html.ActionLink("Registered Users", "UserListBySession", "ManageSessions", new { area = "Admin", sessionId = session.SessionId }, null)
+                    @Html.ActionLink("Edit", "Edit", "ManageSessions", new { area = "Admin", sessionId = session.SessionId }, null) <br /> 
+                    @Html.ActionLink("Registered Users", "UserListBySession", "ManageSessions", new { area = "Admin", sessionId = session.SessionId }, null) <br />
+                    @Html.ActionLink("Presenters", "PresenterListBySession", "ManageSessions", new { area = "Admin", sessionId = session.SessionId }, null)
                 </td>
             </tr>
         }

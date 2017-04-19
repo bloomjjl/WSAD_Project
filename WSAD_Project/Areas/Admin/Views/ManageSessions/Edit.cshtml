@@ -75,14 +75,11 @@
                             var presenter = Model.Presenters[i];
                             <tr>
                                 <td id="presenter_@Model.Presenters[i].Id">@presenter.FirstName @presenter.LastName</td>
-@*                                <td id="presenter_@Model.Presenters[i].PresenterUserId"><strike id="presenter_strike_@Model.Presenters[i].PresenterUserId">@presenter.PresenterUserName</strike></td>
-                                <td><a href="#" onclick="remove(@presenter.Id)">Remove</a></td>
-                                <td><a href="#" onclick="add(@presenter.PresenterUserId)" display="none">Add</a></td>
-*@                           </tr>
+                           </tr>
                         }
                         <tr>
                             <td>
-                                @Html.ActionLink("Update Presenters","AddPresenterToSession", new { sessionId = Model.Id })
+                                @Html.ActionLink("Update Presenters","PresenterListbySession", new { sessionId = Model.Id })
                             </td>
                             <td>&nbsp;</td>
                         </tr>

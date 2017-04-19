@@ -15,7 +15,7 @@ namespace WSAD_Project.Controllers
         public IEnumerable<PresenterSearchViewModel> Get(string term)
         {
             IQueryable<User> matches;
-            List<PresenterSearchViewModel> presenterSearchVM = new List<PresenterSearchViewModel>();
+           List<PresenterSearchViewModel> presenterSearchVM = new List<PresenterSearchViewModel>();
 
             using (WSADDbContext context = new WSADDbContext())
             {
