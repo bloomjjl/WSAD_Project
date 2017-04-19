@@ -33,6 +33,5 @@ namespace WSAD_Project.Models.Data
             }
         }
 
-        //public virtual User User { get; set; }
     }
 }

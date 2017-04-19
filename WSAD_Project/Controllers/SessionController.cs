@@ -467,7 +467,8 @@ namespace WSAD_Project.Controllers
                         context.UserSessions.Add(new UserSession
                         {
                             UserId = userId,
-                            SessionId = sessionId
+                            SessionId = sessionId,
+                            CreateDate = DateTime.Now
                         });
 
                         // remove session from shopping cart in database

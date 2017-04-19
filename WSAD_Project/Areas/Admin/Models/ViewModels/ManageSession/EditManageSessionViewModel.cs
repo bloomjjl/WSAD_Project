@@ -9,7 +9,7 @@ namespace WSAD_Project.Areas.Admin.Models.ViewModels.ManageSession
     {
         public EditManageSessionViewModel() { }
 
-        public EditManageSessionViewModel(WSAD_Project.Models.Data.Session sessionDTO)
+        public EditManageSessionViewModel(WSAD_Project.Models.Data.Session sessionDTO, List<WSAD_Project.Models.Data.User> presenterList)
         {
             Id = sessionDTO.Id;
             Title = sessionDTO.Title;
@@ -18,6 +18,7 @@ namespace WSAD_Project.Areas.Admin.Models.ViewModels.ManageSession
             Room = sessionDTO.Room;
             Time = sessionDTO.Time;
             Occupancy = sessionDTO.Occupancy;
+            Presenters = presenterList;
         }
 
 
@@ -28,5 +29,7 @@ namespace WSAD_Project.Areas.Admin.Models.ViewModels.ManageSession
         public string Room { get; set; }
         public DateTime Time { get; set; }
         public int Occupancy { get; set; }
+        public List<WSAD_Project.Models.Data.User> Presenters { get; set; }
     }
+
 }

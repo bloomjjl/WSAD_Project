@@ -10,7 +10,7 @@
 @using (Html.BeginForm("Edit", "ManageSessions"))
 {
     @Html.AntiForgeryToken()
-    
+
     <div class="form-horizontal">
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
@@ -65,12 +65,39 @@
         </div>
 
         <div class="form-group">
+            @Html.LabelFor(model => model.Presenters, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <table>
+                    @{
+
+                        for (int i = 0; i < Model.Presenters.Count(); i++)
+                        {
+                            var presenter = Model.Presenters[i];
+                            <tr>
+                                <td id="presenter_@Model.Presenters[i].Id">@presenter.FirstName @presenter.LastName</td>
+@*                                <td id="presenter_@Model.Presenters[i].PresenterUserId"><strike id="presenter_strike_@Model.Presenters[i].PresenterUserId">@presenter.PresenterUserName</strike></td>
+                                <td><a href="#" onclick="remove(@presenter.Id)">Remove</a></td>
+                                <td><a href="#" onclick="add(@presenter.PresenterUserId)" display="none">Add</a></td>
+*@                           </tr>
+                        }
+                        <tr>
+                            <td>
+                                @Html.ActionLink("Update Presenters","AddPresenterToSession", new { sessionId = Model.Id })
+                            </td>
+                            <td>&nbsp;</td>
+                        </tr>
+                    }
+                </table>
+            </div>
+        </div>
+
+        <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
                 <input type="submit" value="Save" class="btn btn-success" />
             </div>
         </div>
     </div>
-}
+            }
 
 <div>
     @Html.ActionLink("Back to List", "Index")
@@ -78,4 +105,21 @@
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
+    
+    <script>
+        function remove(presenterId) {
+            console.log('showPresenter' + presenterId);
+            document.getElementById('presenter_strike_' + presenterId).style.visibility = 'hidden';
+            document.getElementById('removePresenter_' + presenterId).style.display = 'none';
+            document.getElementById('showPresenter_' + presenterId).style.display = 'none';
+        }
+        
+        function add(presenterId) {
+            hide(document.getElementById('removePresenter' + presenterId));
+            show(document.getElementById('showPresenter' + presenterId));
+            hide(document.getElementById('removePresenter'));
+            show(document.getElementById('showPresenter'));
+        }
+        //<strike>not yet available!</strike>
+    </script>
 }

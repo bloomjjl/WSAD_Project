@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Routing;
 using System.Web.UI.WebControls;
@@ -14,13 +15,13 @@ namespace WSAD_Project
         {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
-            /*
+            
             routes.MapHttpRoute(
                 name: "API Default",
                 routeTemplate: "api/{controller}/{id}",
-                defaults: new { id = RouteParameter.Optional }
+                defaults: new { id = System.Web.Http.RouteParameter.Optional }
             );
-            */
+            
 
             routes.MapRoute(
                 name: "Login",

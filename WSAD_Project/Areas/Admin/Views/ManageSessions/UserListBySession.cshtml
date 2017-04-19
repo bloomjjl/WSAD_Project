@@ -4,17 +4,33 @@
     ViewBag.Title = "UserListBySession";
 }
 
-<h2>Registered Users For Session: @Model.SessionTitle</h2>
+<div>
+    <h2>Registered Users For Session:</h2>
+    <h3>@Model.SessionTitle</h3>
+</div>
+
+<span>&nbsp;</span>
 
 <div>
     <label>Register Another User For Session:</label>
     @Html.TextBox("UserSearch", null, new { placeholder = "Type User Name To Search", @class = "form-control" })
 </div>
 
+<span>&nbsp;</span>
+
 <table class="table">
     <tr>
         <th>
             User
+        </th>
+        <th>
+            First Name
+        </th>
+        <th>
+            Last Name
+        </th>
+        <th>
+            Date Registered
         </th>
         <th></th>
     </tr>
@@ -28,9 +44,46 @@
                 @Html.DisplayFor(x => Model.UserItems[i].UserName)
             </td>
             <td>
+                @Html.DisplayFor(x => Model.UserItems[i].FirstName)
+            </td>
+            <td>
+                @Html.DisplayFor(x => Model.UserItems[i].LastName)
+            </td>
+            <td>
+                @Html.DisplayFor(x => Model.UserItems[i].DateRegistered)
+            </td>
+            <td>
                 @Html.ActionLink("Delete", "RemoveSessionFromUser", "ManageSessions", new { area = "Admin", userId = item.UserId, sessionId = Model.SessionId }, null)
             </td>
         </tr>
     }
 
 </table>
+
+<span>&nbsp;</span>
+@(Html.ActionLink("Back to List", "Index", "ManageSessions", null, new { @class = "btn btn-success" }))
+
+
+
+@section scripts{
+    @Scripts.Render("~/bundles/jqueryui")
+    <script>
+        $(function() {
+            $("#UserSearch").autocomplete({
+                source: "@(Url.Content("~/api/UserSearch"))",
+                minLength: 1,
+                select: function (event, ui) {
+                    var userId = ui.item.UserId;
+                    window.location =
+                        "@(Url.Action("AddUserToSession", new { sessionId = Model.SessionId }))" +
+                        "&userId=" + userId;
+                }
+            })
+            .autocomplete("instance")._renderItem = function (ul, item) {
+                return $("<li>")
+                    .append("<a>" + item.UserName + "<small> ("+ item.FirstName + " " + item.LastName +") </small></a>")
+                    .appendTo(ul);
+            };
+        });
+    </script>
+}

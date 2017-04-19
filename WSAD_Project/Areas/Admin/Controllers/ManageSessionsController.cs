@@ -96,16 +96,18 @@ namespace WSAD_Project.Areas.Admin.Controllers
 
 
         [HttpGet]
-        public ActionResult Edit(int? id = 0)
+        public ActionResult Edit(int? sessionId = 0)
         {
-            int intSessionId = ValidateAndGetNullableIntegerAsInteger(id);
+            int intSessionId = ValidateAndGetNullableIntegerAsInteger(sessionId);
+
+            // Get session information for session ID
 
             // setup a DbContext
             EditManageSessionViewModel sessionVM;
 
             using (WSADDbContext context = new WSADDbContext())
             {
-                // Get All sessions
+                // store information for specified session ID
                 WSAD_Project.Models.Data.Session sessionDTO = context.Sessions.FirstOrDefault(x => x.Id == intSessionId);
 
                 // Move user into a ViewModel object
@@ -115,10 +117,69 @@ namespace WSAD_Project.Areas.Admin.Controllers
                 }
                 else
                 {
-                    sessionVM = new EditManageSessionViewModel(sessionDTO);
+                    List<WSAD_Project.Models.Data.User> presenterList = GetListOfPresentersForSessionFromDatabase(sessionDTO);
+
+                    // transfer information to ViewModel
+                    sessionVM = new EditManageSessionViewModel(sessionDTO, presenterList);
+
+                    /*
+                    // get list of presenters for session
+                    int sessionID = sessionDTO.Id;
+                    List<WSAD_Project.Models.Data.PresenterSession> presenterSessionsDTO = context.PresenterSessions
+                        .Include("User")
+                        .Where(x => x.SessionId == sessionDTO.Id)
+                        .ToList();
+
+                    if (presenterSessionsDTO != null)
+                    {
+                        sessionVM.Presenters = new List<Presenter>();
+
+                        for (int i = 0; i < presenterSessionsDTO.Count(); i++)
+                        {
+                            sessionVM.Presenters.Add(new Presenter()
+                            {
+                                PresenterUserId = presenterSessionsDTO[i].UserId,
+                                PresenterUserName = presenterSessionsDTO[i].User.Username,
+                                ToAdd = false,
+                                ToRemove = false
+                            });
+                        }
+                    }
+                    */
                 }
 
                 return View(sessionVM);
+            }
+        }
+
+
+
+        public List<WSAD_Project.Models.Data.User> GetListOfPresentersForSessionFromDatabase(WSAD_Project.Models.Data.Session sessionDTO)
+        {
+            using (WSADDbContext context = new WSADDbContext())
+            {
+                // get session presenters from database
+                List<WSAD_Project.Models.Data.PresenterSession> dbPresenters = context.PresenterSessions
+                    .Include("User")
+                    .Where(x => x.SessionId == sessionDTO.Id)
+                    .ToList();
+
+                if (dbPresenters == null) { return new List<WSAD_Project.Models.Data.User>(); }
+
+                // store the names of each presenter for session
+                List<User> presenters = new List<User>();
+                foreach (var presenterDTO in dbPresenters)
+                {
+                    presenters.Add( new User()
+                    {
+                        Id = presenterDTO.UserId,
+                        FirstName = presenterDTO.User.FirstName,
+                        LastName = presenterDTO.User.LastName
+                    });
+                }
+
+                // return list of presenter names
+                return presenters;
             }
         }
 
@@ -214,7 +275,6 @@ namespace WSAD_Project.Areas.Admin.Controllers
 
 
 
-
         public ActionResult SessionListByUser(int? userId)
         {
             // validate parameters
@@ -258,11 +318,63 @@ namespace WSAD_Project.Areas.Admin.Controllers
 
 
 
+        public ActionResult AddUserToSession (int? sessionId, int? userId)
+        {
+            // validate parameters
+            int intUserId = ValidateAndGetNullableIntegerAsInteger(userId);
+            int intSessionId = ValidateAndGetNullableIntegerAsInteger(sessionId);
+
+            if (intUserId <= 0 || intSessionId <= 0)
+                { return this.HttpNotFound("Invalid Input Parameters"); }
+
+            // add user to session
+            using (WSADDbContext context = new WSADDbContext())
+            {
+                // get Session & User
+                Session sessinoDTO = context.Sessions.FirstOrDefault(x => x.Id == intSessionId);
+                User userDTO = context.Users.FirstOrDefault(x => x.Id == intUserId);
+
+                // verify Session & User
+                if (sessinoDTO == null) { return this.HttpNotFound("Invalid Input Paramenters"); }
+                if (userDTO == null) { return this.HttpNotFound("Invalid Input Paramenters"); }
+
+                // check for existing user for session
+                UserSession userSessionDTO = context.UserSessions
+                    .Where(x => x.SessionId == intSessionId)
+                    .Where(x => x.UserId == intUserId)
+                    .FirstOrDefault();
+
+                if (userSessionDTO == null)
+                {
+                    // build new user session
+                    UserSession newUserSession = new UserSession()
+                    {
+                        SessionId = intSessionId,
+                        UserId = intUserId,
+                        CreateDate = DateTime.Now
+                    };
+
+                    context.UserSessions.Add(newUserSession);
+
+                    // save changes
+                    context.SaveChanges();
+                }
+            }
+
+            // update view
+            return RedirectToAction("UserListBySession", new { sessionId = intSessionId });
+        }
+
+
+
         public ActionResult RemoveUserFromSession (int? userId, int? sessionId)
         {
             // validate parameters
             int intUserId = ValidateAndGetNullableIntegerAsInteger(userId);
             int intSessionId = ValidateAndGetNullableIntegerAsInteger(sessionId);
+
+            if (intUserId <= 0 || intSessionId <= 0)
+                { return this.HttpNotFound("Invalid Input Parameters"); }
 
             // remove user from session
             using (WSADDbContext context = new WSADDbContext())
@@ -284,6 +396,33 @@ namespace WSAD_Project.Areas.Admin.Controllers
             return RedirectToAction("SessionListByUser", new { userId = intUserId });
         }
 
+
+        
+        public ActionResult RemovePresenterFromSession(int? userId, int? sessionId)
+        {
+            // validate parameters
+            int intUserId = ValidateAndGetNullableIntegerAsInteger(userId);
+            int intSessionId = ValidateAndGetNullableIntegerAsInteger(sessionId);
+
+            // remove user from session
+/*            using (WSADDbContext context = new WSADDbContext())
+            {
+                // get presenter session
+                WSAD_Project.Models.Data.PresenterSession presenterSessionDTO = context.PresenterSessions
+                    .Where(x => x.UserId == intUserId)
+                    .Where(x => x.SessionId == intSessionId)
+                    .FirstOrDefault();
+
+                // remove presenter from session
+                context.PresenterSessions.Remove(presenterSessionDTO);
+
+                // update database
+                context.SaveChanges();
+            }
+*/
+            // update view to user
+            return RedirectToAction("Edit", new { sessionId = intSessionId });
+        }
 
 
 
@@ -312,6 +451,7 @@ namespace WSAD_Project.Areas.Admin.Controllers
             using (WSADDbContext context = new WSADDbContext())
             {
                 dbSessionUsers = context.UserSessions
+                    .Include("User")
                     .Where(row => row.SessionId == intSessionId)
                     .ToList();
 
@@ -323,7 +463,10 @@ namespace WSAD_Project.Areas.Admin.Controllers
                         sessionUsersVM.UserItems.Add(new UserItem()
                         {
                             UserId = sessionUserDTO.UserId,
-                            UserName = sessionUserDTO.User.Username
+                            UserName = sessionUserDTO.User.Username,
+                            FirstName = sessionUserDTO.User.FirstName,
+                            LastName = sessionUserDTO.User.LastName,
+                            DateRegistered = sessionUserDTO.CreateDate
                         });
                     }
 
@@ -333,6 +476,7 @@ namespace WSAD_Project.Areas.Admin.Controllers
 
             return View(sessionUsersVM);
         }
+
 
 
         public ActionResult RemoveSessionFromUser(int? userId, int? sessionId)
