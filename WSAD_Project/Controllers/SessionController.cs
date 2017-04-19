@@ -94,10 +94,10 @@ namespace WSAD_Project.Controllers
             using (WSADDbContext context = new WSADDbContext())
             {
                 // get all sessions
-                var dbSessions = context.Sessions;
+                IEnumerable<Session> dbSessions = context.Sessions;
 
                 // move sessions to a ViewModel object
-                foreach (var sessionDTO in dbSessions)
+                foreach (Session sessionDTO in dbSessions)
                 {
                     collectionOfSessionVM.Add(
                         new SessionViewModel(sessionDTO)
@@ -294,13 +294,13 @@ namespace WSAD_Project.Controllers
                 using (WSADDbContext context = new WSADDbContext())
                 {
                     // get all sessions
-                    var dbSession = context.Sessions;
+                    IEnumerable<Session> dbSession = context.Sessions;
 
                     // get sessions user signed up for
-                    var dbUserSessions = context.UserSessions.Where(x => x.UserId == userId).ToList();
+                    IEnumerable<UserSession> dbUserSessions = context.UserSessions.Where(x => x.UserId == userId).ToList();
 
                     // move sessions to a ViewModel object
-                    foreach (var sessionDTO in dbSession)
+                    foreach (Session sessionDTO in dbSession)
                     {
                         var userSessionDTO = dbUserSessions.FirstOrDefault(row => row.SessionId == sessionDTO.Id);
 
@@ -333,10 +333,10 @@ namespace WSAD_Project.Controllers
                 using (WSADDbContext context = new WSADDbContext())
                 {
                     // get all sessions user signed up for
-                    var dbUserSessions = context.UserSessions.Where(x => x.UserId == userId).ToList();
+                    IEnumerable<UserSession> dbUserSessions = context.UserSessions.Where(x => x.UserId == userId).ToList();
 
                     // move sessions to a ViewModel object
-                    foreach (var userSessionDTO in dbUserSessions)
+                    foreach (UserSession userSessionDTO in dbUserSessions)
                     {
                         var sessionDTO = context.Sessions.Find(userSessionDTO.SessionId);
 

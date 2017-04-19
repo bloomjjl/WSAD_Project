@@ -18,6 +18,8 @@ namespace WSAD_Project.Models.Data
         [Column("Session_Id", Order = 1)] // connects foreign key below
         public int SessionId { get; set; }
 
+        public DateTime CreateDate { get; set; }
+
 
         [ForeignKey("UserId")]
         public virtual User User { get; set; }

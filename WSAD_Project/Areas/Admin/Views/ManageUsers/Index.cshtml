@@ -89,8 +89,13 @@
                     @Html.DisplayFor(modelItem => item.DateCreated)
                 </td>
                 <td>
-                    @Html.ActionLink("Edit", "Edit", "ManageUsers", new { id = item.Id }, null) | 
-                    @Html.ActionLink("Registered Sessions", "SessionListByUser", "ManageUsers", new { userId = item.Id }, null)
+                    @Html.ActionLink("Edit", "Edit", "ManageUsers", new { id = item.Id }, null) <br/>
+                    @Html.ActionLink("Registered Sessions", "SessionListByUser", "ManageUsers", new { userId = item.Id }, null) <br/>
+                    @{ if (item.IsPresenter)
+                        {
+                            @Html.ActionLink("Presenting Sessions", "SessionListByPresenter", "ManageUsers", new { userId = item.Id }, null)
+                        }
+                    }
                 </td>
             </tr>
         }

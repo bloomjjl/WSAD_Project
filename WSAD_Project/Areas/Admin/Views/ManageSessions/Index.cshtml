@@ -33,15 +33,15 @@
             var session = Model[i];
             <tr>
                 <td>
-                    @Html.HiddenFor(x => Model[i].Id)
+                    @Html.HiddenFor(x => Model[i].SessionId)
                     @Html.CheckBoxFor(x => Model[i].IsSelected)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => session.Title)
                 </td>
                 <td>
-                    @Html.ActionLink("Edit", "Edit", "ManageSessions", new { sessionId = session.Id }, null) | 
-                    @Html.ActionLink("Registered Users", "UserListBySession", "ManageSessions", new { area = "Admin", sessionId = session.Id }, null)
+                    @Html.ActionLink("Edit", "Edit", "ManageSessions", new { sessionId = session.SessionId }, null) | 
+                    @Html.ActionLink("Registered Users", "UserListBySession", "ManageSessions", new { area = "Admin", sessionId = session.SessionId }, null)
                 </td>
             </tr>
         }

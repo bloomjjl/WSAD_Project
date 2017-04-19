@@ -171,9 +171,9 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Admin\Controllers\ManageUsersController.cs" />
-    <Compile Include="Areas\Admin\Controllers\ManageUserSessionsController.cs" />
     <Compile Include="Areas\Admin\Models\ViewModels\ManageSession\CreateManageSessionViewModel.cs" />
     <Compile Include="Areas\Admin\Models\ViewModels\ManageSession\EditManageSessionViewModel.cs" />
+    <Compile Include="Areas\Admin\Models\ViewModels\ManageUser\SessionListByPresenterViewModel.cs" />
     <Compile Include="Areas\Admin\Models\ViewModels\ManageUser\SessionListByUserViewModel.cs" />
     <Compile Include="Areas\Admin\Models\ViewModels\ManageSession\UserListBySessionViewModel.cs" />
     <Compile Include="Areas\Admin\Models\ViewModels\ManageUser\CreateManageUserViewModel.cs" />
@@ -184,6 +184,7 @@
     <Compile Include="Areas\Admin\Controllers\ManageSessionsController.cs" />
     <Compile Include="Controllers\SessionController.cs" />
     <Compile Include="Controllers\ShoppingCartController.cs" />
+    <Compile Include="Controllers\PresenterSearchController.cs" />
     <Compile Include="Controllers\UserSearchController.cs" />
     <Compile Include="Controllers\SessionSearchController.cs" />
     <Compile Include="Global.asax.cs">
@@ -202,6 +203,7 @@
     <Compile Include="Models\ViewModels\Account\LoginUserViewModel.cs" />
     <Compile Include="Models\ViewModels\Account\UserNavPartialViewModel.cs" />
     <Compile Include="Models\ViewModels\Account\UserProfileViewModel.cs" />
+    <Compile Include="Models\ViewModels\PresenterSearch\PresenterSearchViewModel.cs" />
     <Compile Include="Models\ViewModels\SessionSearch\SessionSearchViewModel.cs" />
     <Compile Include="Models\ViewModels\Session\ScheduledSessionDetailsViewModel.cs" />
     <Compile Include="Models\ViewModels\Session\SessionRegistrationViewModel.cs" />
@@ -281,6 +283,7 @@
     <Content Include="Areas\Admin\Views\ManageSessions\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\ManageUsers\SessionListByUser.cshtml" />
     <Content Include="Areas\Admin\Views\ManageSessions\UserListBySession.cshtml" />
+    <Content Include="Areas\Admin\Views\ManageUsers\SessionListByPresenter.cshtml" />
     <None Include="Scripts\jquery-1.12.4.intellisense.js" />
     <Content Include="Scripts\jquery-1.12.4.js" />
     <Content Include="Scripts\jquery-1.12.4.min.js" />
@@ -324,9 +327,7 @@
     <Content Include="Views\Session\ScheduledSessionDetails.cshtml" />
     <Content Include="Views\ShoppingCart\Index.cshtml" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Areas\Admin\Views\ManageUserSessions\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />

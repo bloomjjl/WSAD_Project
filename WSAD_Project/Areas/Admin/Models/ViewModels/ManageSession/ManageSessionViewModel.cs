@@ -15,7 +15,7 @@ namespace WSAD_Project.Areas.Admin.Models.ViewModels.ManageSession
 
         public ManageSessionsViewModel(Session sessionDTO)
         {
-            Id = sessionDTO.Id;
+            SessionId = sessionDTO.Id;
             Title = sessionDTO.Title;
             Description = sessionDTO.Description;
             Address = sessionDTO.Address;
@@ -25,7 +25,7 @@ namespace WSAD_Project.Areas.Admin.Models.ViewModels.ManageSession
             RemainingSeats = sessionDTO.Occupancy;
         }
 
-        public int Id { get; set; }
+        public int SessionId { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
         public string Address { get; set; }

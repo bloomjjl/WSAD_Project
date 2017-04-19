@@ -40,7 +40,7 @@ namespace WSAD_Project.Areas.Admin.Controllers
                 // Loop through ViewModel Items to Delete
                 foreach (var vmItems in vmItemsToDelete)
                 {
-                    var dtoToDelete = context.Sessions.FirstOrDefault(row => row.Id == vmItems.Id);
+                    Session dtoToDelete = context.Sessions.FirstOrDefault(row => row.Id == vmItems.SessionId);
                     context.Sessions.Remove(dtoToDelete);
                 }
 
@@ -263,7 +263,7 @@ namespace WSAD_Project.Areas.Admin.Controllers
                 for (int i = 0; i < collectionOfSessionVM.Count(); i++)
                 {
                     int totalSeats = collectionOfSessionVM[i].Occupancy;
-                    int currentSessionId = collectionOfSessionVM[i].Id;
+                    int currentSessionId = collectionOfSessionVM[i].SessionId;
                     int seatsTaken = dbUserSessions.Where(x => x.SessionId == currentSessionId).Count();
 
                     collectionOfSessionVM[i].RemainingSeats = totalSeats - seatsTaken;

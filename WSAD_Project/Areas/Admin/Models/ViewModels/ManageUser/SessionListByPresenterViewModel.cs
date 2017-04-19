@@ -6,16 +6,16 @@ using WSAD_Project.Models.Data;
 
 namespace WSAD_Project.Areas.Admin.Models.ViewModels.ManageUser
 {
-    public class SessionListByUserViewModel
+    public class SessionListByPresenterViewModel
     {
-        public SessionListByUserViewModel() { }
+        public SessionListByPresenterViewModel() { }
 
-        public SessionListByUserViewModel(User userDTO)
+        public SessionListByPresenterViewModel(User presenterDTO)
         {
-            UserId = userDTO.Id;
-            UserName = userDTO.Username;
-            FirstName = userDTO.FirstName;
-            LastName = userDTO.LastName;
+            UserId = presenterDTO.Id;
+            UserName = presenterDTO.Username;
+            FirstName = presenterDTO.FirstName;
+            LastName = presenterDTO.LastName;
         }
 
 
@@ -23,10 +23,10 @@ namespace WSAD_Project.Areas.Admin.Models.ViewModels.ManageUser
         public string UserName { get; private set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public List<UserSessionItem> UserSessionItems { get; set; }
+        public List<PresenterSessionItem> PresenterSessionItems { get; set; }
     }
 
-    public class UserSessionItem
+    public class PresenterSessionItem
     {
         public int SessionId { get; set; }
         public string SessionTitle { get; set; }

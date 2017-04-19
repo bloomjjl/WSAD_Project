@@ -5,38 +5,42 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using WSAD_Project.Models.Data;
-using WSAD_Project.Models.ViewModels.SessionSearch;
+using WSAD_Project.Models.ViewModels.PresesnterSearch;
 
 namespace WSAD_Project.Controllers
 {
-    public class SessionSearchController : ApiController
+    public class PresenterSearchController : ApiController
     {
         // GET api/<controller>
-        public IEnumerable<SessionSearchViewModel> Get(string term)
+        public IEnumerable<PresenterSearchViewModel> Get(string term)
         {
-            IQueryable<Session> matches;
-            List<SessionSearchViewModel> sessionSearchVM = new List<SessionSearchViewModel>();
+            IQueryable<User> matches;
+            List<PresenterSearchViewModel> presenterSearchVM = new List<PresenterSearchViewModel>();
 
             using (WSADDbContext context = new WSADDbContext())
             {
                 if (string.IsNullOrWhiteSpace(term))
                 {
-                    // show all sessions
-                    matches = context.Sessions.AsQueryable();
+                    // show all presenters
+                    matches = context.Users
+                        .Where(x => x.IsPresenter == true)
+                        .AsQueryable();
                 }
                 else
                 {
-                    // show only sessions matching query
-                    matches = context.Sessions.Where(row => row.Title.StartsWith(term));
+                    // show only presenters matching query
+                    matches = context.Users
+                        .Where(row => row.Username.StartsWith(term))
+                        .Where(x => x.IsPresenter == true);
                 }
 
                 // load ViewModel
-                foreach (Session sessionDTO in matches)
+                foreach (var presenterDTO in matches)
                 {
-                    sessionSearchVM.Add(new SessionSearchViewModel(sessionDTO));
+                    presenterSearchVM.Add(new PresenterSearchViewModel(presenterDTO));
                 }
 
-                return sessionSearchVM;
+                return presenterSearchVM;
             }
         }
 
@@ -64,7 +68,5 @@ namespace WSAD_Project.Controllers
         {
         }
         */
-
-
     }
 }
