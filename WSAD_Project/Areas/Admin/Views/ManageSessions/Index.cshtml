@@ -4,7 +4,10 @@
     ViewBag.Title = "Manage Session Index";
 }
 
-<h2>Manage Sessions</h2>
+<p id="page_title">
+    Manage Sessions
+</p>
+
 
 @using (Html.BeginForm("Delete", "ManageSessions"))
 {
@@ -40,16 +43,16 @@
                     @Html.DisplayFor(modelItem => session.Title)
                 </td>
                 <td>
-                    @Html.ActionLink("Edit", "Edit", "ManageSessions", new { area = "Admin", sessionId = session.SessionId }, null) <br /> 
+                    @Html.ActionLink("Edit", "Edit", "ManageSessions", new { area = "Admin", sessionId = session.SessionId }, null) <br />
                     @Html.ActionLink("Registered Users", "UserListBySession", "ManageSessions", new { area = "Admin", sessionId = session.SessionId }, null) <br />
                     @Html.ActionLink("Presenters", "PresenterListBySession", "ManageSessions", new { area = "Admin", sessionId = session.SessionId }, null)
                 </td>
             </tr>
         }
-   
+
     </table>
 
     <button type="submit" class="btn btn-danger">Delete Selected Sessions</button>
     <span>&nbsp;</span>
     @(Html.ActionLink("Create New Session", "Create", "ManageSessions", null, new { @class = "btn btn-success" }));
-    }
+}

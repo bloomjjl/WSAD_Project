@@ -4,7 +4,9 @@
     ViewBag.Title = "Index";
 }
 
-<h2>Session Shopping Cart</h2>
+<p id="page_title">
+    Session Shopping Cart
+</p>
 
 @if (TempData["ShoppingCartMessage"] != null)
 {
@@ -27,10 +29,11 @@
 @using (Html.BeginForm("Registration", "Session"))
 {
     @Html.AntiForgeryToken()
-
-    <button type="submit" class="btn btn-danger">Register For Selected Sessions</button>
-    <span>&nbsp;</span>
-    @(Html.ActionLink("Back to List", "Index", "Session", null, new { @class = "btn btn-success" }));
+    <p>
+        <button type="submit" class="btn btn-success">Register For Selected Sessions</button>
+        <span>&nbsp;</span>
+        @(Html.ActionLink("Back to List", "Index", "Session", null, new { @class = "btn btn-warning " }))
+    </p>
 
     <table class="table">
         <tr>
@@ -42,24 +45,24 @@
             </th>
             <th></th>
         </tr>
-        
-   @for (int i = 0; i < Model.Count; i++)
-   {
-       var item = Model[i];
 
-        <tr>
-            <td>
-                @Html.HiddenFor(x => Model[i].ShoppingCartId)
-                @Html.CheckBoxFor(x => Model[i].IsSelected)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Session.Title)
-            </td>
-            <td>
-                @Html.ActionLink("Delete", "Delete", "ShoppingCart", new { shoppingCartId = item.ShoppingCartId }, null)
-            </td>
-        </tr>
-    }
+        @for (int i = 0; i < Model.Count; i++)
+        {
+            var item = Model[i];
+
+            <tr>
+                <td>
+                    @Html.HiddenFor(x => Model[i].ShoppingCartId)
+                    @Html.CheckBoxFor(x => Model[i].IsSelected)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Session.Title)
+                </td>
+                <td>
+                    @Html.ActionLink("Delete", "Delete", "ShoppingCart", new { shoppingCartId = item.ShoppingCartId }, null)
+                </td>
+            </tr>
+        }
 
     </table>
 

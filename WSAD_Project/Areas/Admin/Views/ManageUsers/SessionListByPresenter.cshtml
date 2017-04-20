@@ -4,19 +4,14 @@
     ViewBag.Title = "SessionListByPresenter";
 }
 
-<div>
-    <h2>Sessions Presented by User:</h2>
-    <h3>@Model.UserName <small>(@Model.FirstName @Model.LastName)</small></h3>
-</div>
+<p id="page_title">
+    Sessions Presented by: <span id="page_title_name">@Model.UserName <small>(@Model.FirstName @Model.LastName)</small></span>
+</p>
 
-<span>&nbsp;</span>
-
-<div>
-    <label>Register User to Present Another Session:</label>
+<div id="page_search">
+    <label>Register User to Present for Another Session:</label>
     @Html.TextBox("SessionPresenterSearch", null, new { placeholder = "Type Session Title To Search", @class = "form-control" })
 </div>
-
-<span>&nbsp;</span>
 
 <table class="table">
     <tr>
@@ -28,7 +23,7 @@
         </th>
         <th></th>
     </tr>
-    
+
     @for (int i = 0; i < Model.PresenterSessionItems.Count(); i++)
     {
         var item = Model.PresenterSessionItems[i];
@@ -41,7 +36,7 @@
                 @Html.DisplayFor(x => Model.PresenterSessionItems[i].DateRegistered)
             </td>
             <td>
-                @Html.ActionLink("Delete", "RemoveSessionFromPresenter", "ManageUsers", new { area = "Admin" , userId = Model.UserId, sessionId = item.SessionId }, null)
+                @Html.ActionLink("Delete", "RemoveSessionFromPresenter", "ManageUsers", new { area = "Admin", userId = Model.UserId, sessionId = item.SessionId }, null)
             </td>
         </tr>
     }
@@ -49,28 +44,28 @@
 </table>
 
 <span>&nbsp;</span>
-@(Html.ActionLink("Back to List", "Index", "ManageUsers", null, new { @class = "btn btn-success" }))
+@(Html.ActionLink("Back to List", "Index", "ManageUsers", null, new { @class = "btn btn-warning" }))
 
 
 @section scripts{
     @Scripts.Render("~/bundles/jqueryui")
     <script>
-            $(function() {
-                $("#SessionPresenterSearch").autocomplete({
-                    source: "@(Url.Content("~/api/SessionSearch"))",
-                    minLength: 1,
-                    select: function (event, ui) {
-                        var sessionId = ui.item.SessionId;
-                        window.location =
-                            "@(Url.Action("AddSessionToPresenter", new { userId = Model.UserId }))" +
-                            "&sessionId=" + sessionId;
-                    }
-                })
-                .autocomplete("instance")._renderItem = function (ul, item) {
-                    return $("<li>")
-                        .append("<a>" + item.SessionTitle + "</a>")
-                        .appendTo(ul);
-                };
-            });
+        $(function () {
+            $("#SessionPresenterSearch").autocomplete({
+                source: "@(Url.Content("~/api/SessionSearch"))",
+                minLength: 1,
+                select: function (event, ui) {
+                    var sessionId = ui.item.SessionId;
+                    window.location =
+                        "@(Url.Action("AddSessionToPresenter", new { userId = Model.UserId }))" +
+                        "&sessionId=" + sessionId;
+                }
+            })
+            .autocomplete("instance")._renderItem = function (ul, item) {
+                return $("<li>")
+                    .append("<a>" + item.SessionTitle + "</a>")
+                    .appendTo(ul);
+            };
+        });
     </script>
 }

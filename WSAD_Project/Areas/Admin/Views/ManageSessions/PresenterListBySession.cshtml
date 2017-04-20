@@ -4,19 +4,14 @@
     ViewBag.Title = "PresenterListBySession";
 }
 
-<div>
-    <h2>Users Presenting For Session:</h2>
-    <h3>@Model.SessionTitle</h3>
-</div>
+<p id="page_title">
+    Users Presenting For Session: <span id="page_title_name">@Model.SessionTitle</span>
+</p>
 
-<span>&nbsp;</span>
-
-<div>
-    <label>Register Another Presesnter For Session:</label>
+<div id="page_search">
+    <label>Register Another Presenter For Session:</label>
     @Html.TextBox("PresenterSearch", null, new { placeholder = "Type User Name To Search", @class = "form-control" })
 </div>
-
-<span>&nbsp;</span>
 
 <table class="table">
     <tr>
@@ -34,7 +29,7 @@
         </th>
         <th></th>
     </tr>
-    
+
     @for (int i = 0; i < Model.SessionPresenterItems.Count(); i++)
     {
         var item = Model.SessionPresenterItems[i];
@@ -61,14 +56,14 @@
 </table>
 
 <span>&nbsp;</span>
-@(Html.ActionLink("Back to List", "Index", "ManageSessions", null, new { @class = "btn btn-success" }))
+@(Html.ActionLink("Back to List", "Index", "ManageSessions", null, new { @class = "btn btn-warning" }))
 
 
 
 @section scripts{
     @Scripts.Render("~/bundles/jqueryui")
     <script>
-        $(function() {
+        $(function () {
             $("#PresenterSearch").autocomplete({
                 source: "@(Url.Content("~/api/PresenterSearch"))",
                 minLength: 1,
@@ -81,7 +76,7 @@
             })
             .autocomplete("instance")._renderItem = function (ul, item) {
                 return $("<li>")
-                    .append("<a>" + item.UserName + "<small> ("+ item.FirstName + " " + item.LastName +") </small></a>")
+                    .append("<a>" + item.UserName + "<small> (" + item.FirstName + " " + item.LastName + ") </small></a>")
                     .appendTo(ul);
             };
         });

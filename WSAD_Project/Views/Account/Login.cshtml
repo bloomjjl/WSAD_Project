@@ -3,7 +3,10 @@
     ViewBag.Title = "Login";
 }
 
-<h2>Login</h2>
+<p id="page_title">
+    Login
+</p>
+
 @Html.ValidationSummary()
 
 @if (TempData["LogoutMessage"] != null)
@@ -29,8 +32,8 @@
             <td><label>Remember Me</label></td>
         </tr>
         <tr>
-            <td><button type="submit" name="login">Login</button></td>
-            <td><a href="/Account/Create">Create an Account</a></td>
+            <td><button type="submit" name="login" class="btn btn-success">Login</button></td>
+            <td><a href="/Account/Create" class="btn btn-warning">Create an Account</a></td>
         </tr>
     </table>
 

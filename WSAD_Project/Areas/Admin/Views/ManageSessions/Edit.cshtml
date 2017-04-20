@@ -4,7 +4,9 @@
     ViewBag.Title = "Edit";
 }
 
-<h2>Edit Session Profile</h2>
+<p id="page_title">
+    Edit Session Profile
+</p>
 
 
 @using (Html.BeginForm("Edit", "ManageSessions"))
@@ -13,6 +15,7 @@
 
     <div class="form-horizontal">
         <hr />
+
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model.Id)
 
@@ -69,17 +72,16 @@
             <div class="col-md-10">
                 <table>
                     @{
-
                         for (int i = 0; i < Model.Presenters.Count(); i++)
                         {
                             var presenter = Model.Presenters[i];
                             <tr>
                                 <td id="presenter_@Model.Presenters[i].Id">@presenter.FirstName @presenter.LastName</td>
-                           </tr>
+                            </tr>
                         }
                         <tr>
                             <td>
-                                @Html.ActionLink("Update Presenters","PresenterListbySession", new { sessionId = Model.Id })
+                                @Html.ActionLink("Update Presenters", "PresenterListbySession", new { sessionId = Model.Id })
                             </td>
                             <td>&nbsp;</td>
                         </tr>
@@ -91,18 +93,17 @@
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
                 <input type="submit" value="Save" class="btn btn-success" />
+                <span>&nbsp;</span>
+                @Html.ActionLink("Back to List", "Index", null, new { @class="btn btn-warning" })
             </div>
         </div>
     </div>
-            }
+                        }
 
-<div>
-    @Html.ActionLink("Back to List", "Index")
-</div>
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
-    
+
     <script>
         function remove(presenterId) {
             console.log('showPresenter' + presenterId);
@@ -110,7 +111,7 @@
             document.getElementById('removePresenter_' + presenterId).style.display = 'none';
             document.getElementById('showPresenter_' + presenterId).style.display = 'none';
         }
-        
+
         function add(presenterId) {
             hide(document.getElementById('removePresenter' + presenterId));
             show(document.getElementById('showPresenter' + presenterId));

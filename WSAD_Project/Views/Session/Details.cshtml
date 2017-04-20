@@ -4,7 +4,9 @@
     ViewBag.Title = "Details";
 }
 
-<h2>Session Details</h2>
+<p id="page_title">
+    Session Details
+</p>
 
 @using (Html.BeginForm("AddSessionToOrder", "ShoppingCart"))
 {
@@ -12,7 +14,7 @@
 
     <button type="submit" class="btn btn-danger">Add Session To Shopping Cart</button>
     <span>&nbsp;</span>
-    @(Html.ActionLink("Back to List", "Index", "Session", null, new { @class = "btn btn-success" }));
+    @(Html.ActionLink("Back to List", "Index", "Session", null, new { @class = "btn btn-warning" }))
 
     <div>
         <hr />
@@ -67,8 +69,9 @@
                     for (int i = 0; i < Model.PresenterNames.Count(); i++)
                     {
                         @* display presenter names on their own line *@
-                        if (i > 0) { <br /> }
-                        @Html.DisplayFor(model => model.PresenterNames[i])
+                if (i > 0)
+                { <br /> }
+                @Html.DisplayFor(model => model.PresenterNames[i])
                     }
                 }
             </dd>
@@ -92,7 +95,7 @@
         </dl>
     </div>
 
-    <button type="submit" class="btn btn-danger">Add Session To Shopping Cart</button>
-    <span>&nbsp;</span>
-    @(Html.ActionLink("Back to List", "Index", "Session", null, new { @class = "btn btn-success" }));
+        <button type="submit" class="btn btn-danger">Add Session To Shopping Cart</button>
+        <span>&nbsp;</span>
+        @(Html.ActionLink("Back to List", "Index", "Session", null, new { @class = "btn btn-warning" }));
 }

@@ -4,7 +4,9 @@
     ViewBag.Title = "Index";
 }
 
-<h2>Available Sessions</h2>
+<p id="page_title">
+    Available Sessions
+</p>
 
 @if (TempData["RegisterSessionMessage"] != null)
 {
@@ -29,11 +31,11 @@
     @Html.AntiForgeryToken()
 
     <p>
-        <button type="submit" class="btn btn-danger">Add Selected Sessions To Shopping Cart</button>
+        <button type="submit" class="btn btn-success">Add Selected Sessions To Shopping Cart</button>
         <span>&nbsp;</span>
-        @(Html.ActionLink("Clear Selections", "Index", "Session", null, new { @class = "btn btn-warning" }))
+        @(Html.ActionLink("Clear Selections", "Index", "Session", null, new { @class = "btn btn-danger" }))
         <span>&nbsp;</span>
-        @(Html.ActionLink("View Registered Sessions", "Schedule", "Session", null, new { @class = "btn btn-success" }))
+        @(Html.ActionLink("View Registered Sessions", "Schedule", "Session", null, new { @class = "btn btn-warning" }))
     </p>
 
     <table class="table">

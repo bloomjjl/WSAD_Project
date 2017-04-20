@@ -4,7 +4,9 @@
     ViewBag.Title = "Index";
 }
 
-<h2>Manage Users</h2>
+<p id="page_title">
+    Manage Users
+</p>
 
 @using (Html.BeginForm("Delete", "ManageUsers"))
 {
@@ -55,7 +57,7 @@
         @for (int i = 0; i < Model.Count; i++)
         {
             var item = Model[i];
-            
+
             <tr>
                 <td>
                     @Html.HiddenFor(x => Model[i].Id)
@@ -89,8 +91,8 @@
                     @Html.DisplayFor(modelItem => item.DateCreated)
                 </td>
                 <td>
-                    @Html.ActionLink("Edit", "Edit", "ManageUsers", new { area = "Admin", id = item.Id }, null) <br/>
-                    @Html.ActionLink("Registered Sessions", "SessionListByUser", "ManageUsers", new { area = "Admin", userId = item.Id }, null) <br/>
+                    @Html.ActionLink("Edit", "Edit", "ManageUsers", new { area = "Admin", id = item.Id }, null) <br />
+                    @Html.ActionLink("Registered Sessions", "SessionListByUser", "ManageUsers", new { area = "Admin", userId = item.Id }, null) <br />
                     @{ if (item.IsPresenter)
                         {
                             @Html.ActionLink("Presenting Sessions", "SessionListByPresenter", "ManageUsers", new { area = "Admin", userId = item.Id }, null)
@@ -98,11 +100,11 @@
                     }
                 </td>
             </tr>
-        }
+                        }
 
     </table>
 
     <button type="submit" class="btn btn-danger">Delete Selected Users</button>
     <span>&nbsp;</span>
     @(Html.ActionLink("Create New User", "Create", "ManageUsers", null, new { @class = "btn btn-success" }));
-}
+                        }

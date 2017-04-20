@@ -4,19 +4,14 @@
     ViewBag.Title = "UserListBySession";
 }
 
-<div>
-    <h2>Registered Users For Session:</h2>
-    <h3>@Model.SessionTitle</h3>
-</div>
+<p id="page_title">
+    Registered Users For Session: <span id="page_title_name">@Model.SessionTitle</span>
+</p>
 
-<span>&nbsp;</span>
-
-<div>
+<div id="page_search">
     <label>Register Another User For Session:</label>
     @Html.TextBox("UserSearch", null, new { placeholder = "Type User Name To Search", @class = "form-control" })
 </div>
-
-<span>&nbsp;</span>
 
 <table class="table">
     <tr>
@@ -61,14 +56,14 @@
 </table>
 
 <span>&nbsp;</span>
-@(Html.ActionLink("Back to List", "Index", "ManageSessions", null, new { @class = "btn btn-success" }))
+@(Html.ActionLink("Back to List", "Index", "ManageSessions", null, new { @class = "btn btn-warning" }))
 
 
 
 @section scripts{
     @Scripts.Render("~/bundles/jqueryui")
     <script>
-        $(function() {
+        $(function () {
             $("#UserSearch").autocomplete({
                 source: "@(Url.Content("~/api/UserSearch"))",
                 minLength: 1,
@@ -81,7 +76,7 @@
             })
             .autocomplete("instance")._renderItem = function (ul, item) {
                 return $("<li>")
-                    .append("<a>" + item.UserName + "<small> ("+ item.FirstName + " " + item.LastName +") </small></a>")
+                    .append("<a>" + item.UserName + "<small> (" + item.FirstName + " " + item.LastName + ") </small></a>")
                     .appendTo(ul);
             };
         });

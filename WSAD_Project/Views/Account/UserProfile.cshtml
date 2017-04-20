@@ -4,7 +4,9 @@
     ViewBag.Title = "UserProfile";
 }
 
-<h2>User Profile</h2>
+<p id="page_title">
+    User Profile
+</p>
 
 <div>
     <hr />
@@ -12,7 +14,7 @@
         <dt>
             @Html.DisplayNameFor(model => model.FirstName)
         </dt>
-        
+
         <dd>
             @Html.DisplayFor(model => model.FirstName)
         </dd>
