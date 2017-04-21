@@ -36,6 +36,7 @@ namespace WSAD_Project.Models.ViewModels.Session
         [Display(Name = "Presenters")]
         public List<string> PresenterNames { get; set; }
         public int Occupancy { get; set; }
+        [Display(Name = "Available Seats")]
         public int RemainingSeats { get; set; }
         public bool IsSelected { get; set; }
     }

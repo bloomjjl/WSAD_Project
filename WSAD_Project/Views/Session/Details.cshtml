@@ -12,7 +12,7 @@
 {
     @Html.AntiForgeryToken()
 
-    <button type="submit" class="btn btn-danger">Add Session To Shopping Cart</button>
+    <button type="submit" class="btn btn-success">Add Session To Shopping Cart</button>
     <span>&nbsp;</span>
     @(Html.ActionLink("Back to List", "Index", "Session", null, new { @class = "btn btn-warning" }))
 
@@ -69,9 +69,8 @@
                     for (int i = 0; i < Model.PresenterNames.Count(); i++)
                     {
                         @* display presenter names on their own line *@
-                if (i > 0)
-                { <br /> }
-                @Html.DisplayFor(model => model.PresenterNames[i])
+                        if (i > 0) { <br /> }
+                        @Html.DisplayFor(model => model.PresenterNames[i])
                     }
                 }
             </dd>
@@ -95,7 +94,7 @@
         </dl>
     </div>
 
-        <button type="submit" class="btn btn-danger">Add Session To Shopping Cart</button>
+        <button type="submit" class="btn btn-success">Add Session To Shopping Cart</button>
         <span>&nbsp;</span>
         @(Html.ActionLink("Back to List", "Index", "Session", null, new { @class = "btn btn-warning" }));
 }

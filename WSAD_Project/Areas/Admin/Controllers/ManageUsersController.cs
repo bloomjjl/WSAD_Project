@@ -104,6 +104,7 @@ namespace WSAD_Project.Areas.Admin.Controllers
                     FirstName = model.FirstName,
                     LastName = model.LastName,
                     EmailAddress = model.EmailAddress,
+                    Company = model.Company,
                     IsActive = true,
                     IsAdmin = false,
                     IsPresenter = model.IsPresenter,
@@ -170,6 +171,7 @@ namespace WSAD_Project.Areas.Admin.Controllers
                 userUpdateDTO.FirstName = model.FirstName;
                 userUpdateDTO.LastName = model.LastName;
                 userUpdateDTO.EmailAddress = model.EmailAddress;
+                userUpdateDTO.Company = model.Company;
                 userUpdateDTO.Username = model.Username;
                 userUpdateDTO.IsActive = model.IsActive;
                 userUpdateDTO.IsAdmin = model.IsAdmin;

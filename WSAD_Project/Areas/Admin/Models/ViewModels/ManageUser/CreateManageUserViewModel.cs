@@ -17,6 +17,7 @@ namespace WSAD_Project.Areas.Admin.Models.ViewModels.ManageUser
             LastName = userDTO.LastName;
             UserName = userDTO.Username;
             EmailAddress = userDTO.EmailAddress;
+            Company = userDTO.Company;
             IsAdmin = userDTO.IsAdmin;
             IsPresenter = userDTO.IsPresenter;
             Gender = userDTO.Gender;
@@ -33,6 +34,8 @@ namespace WSAD_Project.Areas.Admin.Models.ViewModels.ManageUser
         [Required]
         [Display(Name = "Email")]
         public string EmailAddress { get; set; }
+
+        public string Company { get; set; }
 
         [Required]
         public string Gender { get; set; }
@@ -53,8 +56,10 @@ namespace WSAD_Project.Areas.Admin.Models.ViewModels.ManageUser
         [Display(Name = "Check To Receive Emails")]
         public bool ReceiveEmails { get; set; }
 
+        [Display(Name = "Admin")]
         public bool IsAdmin { get; set; }
 
+        [Display(Name = "Presenter")]
         public bool IsPresenter { get; set; }
     }
 }

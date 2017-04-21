@@ -20,6 +20,8 @@ namespace WSAD_Project.Models.ViewModels.Account
         [Display(Name = "Email")]
         public string EmailAddress { get; set; }
 
+        public string Company { get; set; }
+
         [Required]
         public string Gender { get; set; }
 

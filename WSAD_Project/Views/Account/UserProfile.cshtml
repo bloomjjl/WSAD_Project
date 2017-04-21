@@ -36,6 +36,14 @@
         </dd>
 
         <dt>
+            @Html.DisplayNameFor(model => model.Company)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Company)
+        </dd>
+
+        <dt>
             @Html.DisplayNameFor(model => model.Gender)
         </dt>
 
@@ -67,8 +75,16 @@
             @Html.DisplayFor(model => model.IsAdmin)
         </dd>
 
+        <dt>
+            @Html.DisplayNameFor(model => model.IsPresenter)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.IsPresenter)
+        </dd>
+
     </dl>
 </div>
 <p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id })
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }, new { @class = "btn btn-success" })
 </p>

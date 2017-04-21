@@ -116,9 +116,7 @@ namespace WSAD_Project.Controllers
         [AllowAnonymous]
         public ActionResult Create(CreateUserViewModel newUser)
         {
-            // Validate the New User
-            // Validate Required fields (no empties)
-            // FirstName, LastName, UserName, Email, Password
+            // Validate ViewModel
             if (!ModelState.IsValid)
             {
                 return View(newUser);
@@ -152,6 +150,7 @@ namespace WSAD_Project.Controllers
                     FirstName = newUser.FirstName,
                     LastName = newUser.LastName,
                     EmailAddress = newUser.EmailAddress,
+                    Company = newUser.Company,
                     IsActive = true,
                     IsAdmin = false,
                     Username = newUser.UserName,
@@ -256,8 +255,10 @@ namespace WSAD_Project.Controllers
                     UserName = userDTO.Username,
                     DateCreated = userDTO.DateCreated,
                     EmailAddress = userDTO.EmailAddress,
-                    //Gender = userDTO.Gender,
-                    IsAdmin = userDTO.IsAdmin
+                    Company = userDTO.Company,
+                    Gender = userDTO.Gender,
+                    IsAdmin = userDTO.IsAdmin,
+                    IsPresenter = userDTO.IsPresenter
                 };
             }
 
@@ -299,6 +300,7 @@ namespace WSAD_Project.Controllers
                     LastName = userDTO.LastName,
                     UserName = userDTO.Username,
                     EmailAddress = userDTO.EmailAddress,
+                    Company = userDTO.Company,
                     Gender = userDTO.Gender
                 };
             }
@@ -376,6 +378,8 @@ namespace WSAD_Project.Controllers
                 userDTO.FirstName = editVM.FirstName;
                 userDTO.LastName = editVM.LastName;
                 userDTO.EmailAddress = editVM.EmailAddress;
+                userDTO.Company = editVM.Company;
+                userDTO.Gender = editVM.Gender;
                 userDTO.DateModified = DateTime.Now;
 
                 // check if password needs updated

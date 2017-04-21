@@ -20,6 +20,7 @@ namespace WSAD_Project.Areas.Admin.Models.ViewModels.ManageUser
             LastName = userDTO.LastName;
             Username = userDTO.Username;
             EmailAddress = userDTO.EmailAddress;
+            Company = userDTO.Company;
             IsActive = userDTO.IsActive;
             IsAdmin = userDTO.IsAdmin;
             IsPresenter = userDTO.IsPresenter;
@@ -31,6 +32,7 @@ namespace WSAD_Project.Areas.Admin.Models.ViewModels.ManageUser
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string EmailAddress { get; set; }
+        public string Company { get; set; }
         public string Username { get; set; }
         public bool IsActive { get; set; }
         public bool IsAdmin { get; set; }

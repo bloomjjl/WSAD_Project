@@ -42,9 +42,18 @@
         </div>
 
         <div class="form-group">
+            @Html.LabelFor(model => model.Company, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Company, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Company, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
             @Html.LabelFor(model => model.Gender, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.Gender, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.RadioButtonFor(model => model.Gender, "Male") <label>Male</label> <br />
+                @Html.RadioButtonFor(model => model.Gender, "Female") <label>Female</label>
                 @Html.ValidationMessageFor(model => model.Gender, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -75,15 +84,14 @@
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />
+                <input type="submit" value="Save" class="btn btn-success" />
+                <span>&nbsp;</span>
+                @Html.ActionLink("Cancel Changes", "UserProfile", Model.Id, new { @class = "btn btn-warning" })
             </div>
         </div>
     </div>
 }
 
-<div>
-    @Html.ActionLink("Cancel Changes", "UserProfile", Model.Id)
-</div>
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")

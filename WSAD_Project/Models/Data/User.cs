@@ -35,6 +35,8 @@ namespace WSAD_Project.Models.Data
 
         public string Gender { get; set; }
 
+        public string Company { get; set; }
+
 
         //public virtual ICollection<UserSession> UserSessions { get; set; }
     }
