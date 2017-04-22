@@ -145,6 +145,70 @@ namespace WSAD_Project.Controllers
 
 
 
+        public ActionResult AddSelectedSessionToOrder(int? sessionId)
+        {
+            // verify session provided
+            int intSessionId = ValidateAndReturnInteger(sessionId);
+            if (intSessionId == 0) { return RedirectToAction("Index"); }
+
+            // Capture logged in User
+            AccountController account = new AccountController();
+            int userId = account.GetUserIdForUsernameFromDatabase(this.User.Identity.Name);
+
+            using (WSADDbContext context = new WSADDbContext())
+            {
+                // make sure not to duplicate session in shopping cart
+                if (context.ShoppingCarts.Any(row =>
+                    row.UserId == userId && row.SessionId == intSessionId))
+                {
+                    // STOP!!
+                }
+                else
+                {
+                    // Create ShoppingCart DTO
+                    ShoppingCart shoppingCartDTO = new ShoppingCart()
+                    {
+                        // Add the SessionId, UserId, Quantity to the DTO
+                        UserId = userId,
+                        SessionId = intSessionId
+                    };
+
+                    // Add DTO to DbContext
+                    context.ShoppingCarts.Add(shoppingCartDTO);
+
+                    // Save DbContext
+                    context.SaveChanges();
+                }
+            }
+
+            // Redirect to ShoppingCart Index
+            return RedirectToAction("Index");
+        }
+
+
+
+        public int ValidateAndReturnInteger(int? id)
+        {
+            int intId;
+
+            if (id == null)
+            {// no value provided
+                // default to zero.
+                return 0;
+            }
+            else if (int.TryParse(id.ToString(), out intId))
+            {// value is an integer
+                // return supplied integer
+                return int.Parse(id.ToString());
+            }
+            else
+            {// value provided is not an integer
+                // default to zero
+                return 0;
+            }
+        }
+
+
 
         public ActionResult Delete(int? shoppingCartId)
         {

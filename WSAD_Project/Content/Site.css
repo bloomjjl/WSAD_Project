@@ -43,3 +43,12 @@ textarea {
 #page_search {
     margin-bottom:15px;
 }
+
+#shopping_cart_session_search_list {
+    padding-left: 10px;
+    padding-right: 10px;
+    border: 1px solid blue;
+    width: 280px;
+    height: 100%;
+    display: none;
+}
