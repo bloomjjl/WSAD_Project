@@ -8,7 +8,7 @@
     Available Sessions
 </p>
 
-@if (TempData["RegisterSessionMessage"] != null)
+@if (TempData["RegisterSessionMessage"] != null && TempData["RegisterSessionMessage"].ToString() != string.Empty)
 {
     if (TempData["RegisterSessionMessage"].ToString() == "SUCCESS")
     {
@@ -17,7 +17,7 @@
             SUCCESS: YOUR SESSION INFORMATION HAS BEEN UPDATED
         </div>
     }
-    else if (TempData["RegisterSessionMessage"].ToString() != string.Empty)
+    else
     {
         <div class="alert alert-danger">
             <span class="glyphicon glyphicon-remove-circle"></span>

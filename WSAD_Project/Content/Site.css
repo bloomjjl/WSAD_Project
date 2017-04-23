@@ -47,8 +47,19 @@ textarea {
 #shopping_cart_session_search_list {
     padding-left: 10px;
     padding-right: 10px;
-    border: 1px solid blue;
     width: 280px;
     height: 100%;
     display: none;
+    border: 1px solid lightgray;
 }
+
+#shopping_cart_session_search_list a {
+    color: black;
+}
+
+#shopping_cart_session_search_list a:hover {
+    background-color: blue;
+    color: white;
+    text-decoration: none;
+}
+

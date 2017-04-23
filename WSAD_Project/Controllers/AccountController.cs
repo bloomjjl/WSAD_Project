@@ -38,25 +38,29 @@ namespace WSAD_Project.Controllers
         /// <param name="password"></param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult Login(LoginUserViewModel loginUser)
+        [ValidateAntiForgeryToken]
+        public ActionResult Login(LoginUserViewModel loginUser, string returnUrl)
         {
             try
             {
                 // Validate username and password is passed (no empties)
                 if (loginUser == null)
                 {
+                    TempData["LoginMessage"] = "Login is required";
                     ModelState.AddModelError("", "Login is required");
                     return View();
                 }
 
                 if (string.IsNullOrWhiteSpace(loginUser.UserName))
                 {
+                    TempData["LoginMessage"] = "User name is required";
                     ModelState.AddModelError("", "Username is required");
                     return View();
                 }
 
                 if (string.IsNullOrWhiteSpace(loginUser.Password))
                 {
+                    TempData["LoginMessage"] = "Password is required";
                     ModelState.AddModelError("", "Password is required");
                     return View();
                 }
@@ -80,15 +84,19 @@ namespace WSAD_Project.Controllers
                 // If invalid, send error
                 if (!isValid)
                 {
+                    TempData["LoginMessage"] = "Invalid Username or Password";
                     ModelState.AddModelError("", "Invalid Username or Password");
                     return View();
                 }
                 else
                 {
                     // Valid, redirect to user profile
+                    TempData["LoginMessage"] = string.Empty;
                     System.Web.Security.FormsAuthentication.SetAuthCookie(loginUser.UserName, loginUser.RememberMe);
 
-                    return Redirect(FormsAuthentication.GetRedirectUrl(loginUser.UserName, loginUser.RememberMe));
+                    //return Redirect(FormsAuthentication.GetRedirectUrl(loginUser.UserName, loginUser.RememberMe));
+                    if (string.IsNullOrEmpty(returnUrl)) { returnUrl = "~/Home/Index"; }
+                    return Redirect(returnUrl);
                 }
             }
             catch

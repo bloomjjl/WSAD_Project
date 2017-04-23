@@ -9,6 +9,7 @@ using WSAD_Project.Models.ViewModels.ShoppingCart;
 
 namespace WSAD_Project.Controllers
 {
+    [Authorize]
     public class SessionController : Controller
     {
         // GET: Session
@@ -179,7 +180,7 @@ namespace WSAD_Project.Controllers
 
             if (userId == 0)
             {
-                return RedirectToAction("Login", "Account");
+                return RedirectToAction("Login", "Account", new { returnUrl = "~/Session/Schedule" });
             }
 
             // get list of sessions user is signed up for

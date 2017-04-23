@@ -7,34 +7,38 @@
     Login
 </p>
 
-@Html.ValidationSummary()
-
-@if (TempData["LogoutMessage"] != null)
+@if (TempData["LoginMessage"] != null && TempData["LoginMessage"].ToString() != string.Empty)
 {
     <div class="alert alert-warning">
-        <span class="glyphicon glyphicon-warning-sign"></span>
+        <span class="glyphicon glyphicon-remove-circle"></span>
+        @TempData["LoginMessage"]
+    </div>
+}
+
+@if (TempData["LogoutMessage"] != null && TempData["LogoutMessage"].ToString() != string.Empty)
+{
+    <div class="alert alert-warning">
+        <span class="glyphicon glyphicon-remove-circle"></span>
         @TempData["LogoutMessage"]
     </div>
 }
 
-<form method="post" action="/Account/Login">
-    <table>
-        <tr>
-            <td><label>User Name:</label></td>
-            <td><input type="text" name="username" /></td>
-        </tr>
-        <tr>
-            <td><label>Password:</label></td>
-            <td><input type="password" name="password" /></td>
-        </tr>
-        <tr>
-            <td style="text-align:right;"><input type="checkbox" value="true" name="rememberMe" /></td>
-            <td><label>Remember Me</label></td>
-        </tr>
-        <tr>
-            <td><button type="submit" name="login" class="btn btn-success">Login</button></td>
-            <td><a href="/Account/Create" class="btn btn-warning">Create an Account</a></td>
-        </tr>
-    </table>
 
-</form>
+
+@using (Html.BeginForm("Login", "Account", new { ReturnUrl = Request.QueryString["ReturnUrl"] }, FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+
+    <p>
+        @Html.TextBox("username", null, new { placeholder = "Enter User Name", @class = "form-control" })
+    </p>
+
+    <p>
+        @Html.Password("password", null, new { placeholder = "Enter Password", @class = "form-control" })
+    </p>
+
+    <p>
+        <button type="submit" name="login" class="btn btn-success">Sign In</button>
+        @(Html.ActionLink("Create an Account", "Create", "Account", null, null))
+    </p>
+}
