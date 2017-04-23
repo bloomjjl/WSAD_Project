@@ -55,6 +55,7 @@ namespace WSAD_Project.Areas.Admin.Models.ViewModels.ManageUser
         public string Gender { get; set; }
 
         [Display(Name = "Date Created")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM/dd/yyyy}")]
         public DateTime DateCreated { get; set; }
     }
 }

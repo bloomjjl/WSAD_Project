@@ -79,7 +79,7 @@ namespace WSAD_Project.Areas.Admin.Controllers
                     Description = model.Description,
                     Address = model.Address,
                     Room = model.Room,
-                    Time = model.Time,
+                    StartDateTime = model.StartDateTime,
                     Occupancy = model.Occupancy
                 };
 
@@ -118,9 +118,22 @@ namespace WSAD_Project.Areas.Admin.Controllers
                 else
                 {
                     List<WSAD_Project.Models.Data.User> presenterList = GetListOfPresentersForSessionFromDatabase(sessionDTO);
+                    List<EditSessionPresenter> sessionPresenters = new List<EditSessionPresenter>();
+                    for (int i = 0; i < presenterList.Count(); i++)
+                    {
+                        sessionPresenters.Add(new EditSessionPresenter()
+                        {
+                            PresenterId = presenterList[i].Id,
+                            FirstName = presenterList[i].FirstName,
+                            LastName = presenterList[i].LastName,
+                            RemovePresenter = false,
+                            AddPresenter = false
+                        });
+                    }
+
 
                     // transfer information to ViewModel
-                    sessionVM = new EditManageSessionViewModel(sessionDTO, presenterList);
+                    sessionVM = new EditManageSessionViewModel(sessionDTO, sessionPresenters);
 
                     /*
                     // get list of presenters for session
@@ -189,13 +202,32 @@ namespace WSAD_Project.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(EditManageSessionViewModel model)
         {
+            // validate parameters
             if (!ModelState.IsValid) { return View(model); }
 
-            // Do the Delete
+            // Do the update
+            int sessionId = UpdateSessionWithChanges(model);
+            if (sessionId > 0 )
+            {
+                UpdatePresentersForSession(sessionId, model.Presenters);
+            }
+
+            return RedirectToAction("Index");
+        }
+
+
+
+        public int UpdateSessionWithChanges(EditManageSessionViewModel model)
+        {
+            // validate
+            int sessionId = ValidateAndGetNullableIntegerAsInteger(model.Id);
+
             using (WSADDbContext context = new WSADDbContext())
             {
-                WSAD_Project.Models.Data.Session sessionUpdateDTO = context.Sessions.FirstOrDefault(x => x.Id == model.Id);
+                // get old values
+                WSAD_Project.Models.Data.Session sessionUpdateDTO = context.Sessions.FirstOrDefault(x => x.Id == sessionId);
 
+                // update database with changes 
                 if (sessionUpdateDTO != null)
                 {
                     // transfer changes to DTO
@@ -203,13 +235,60 @@ namespace WSAD_Project.Areas.Admin.Controllers
                     sessionUpdateDTO.Description = model.Description;
                     sessionUpdateDTO.Address = model.Address;
                     sessionUpdateDTO.Room = model.Room;
-                    sessionUpdateDTO.Time = model.Time;
+                    sessionUpdateDTO.StartDateTime = model.StartDateTime;
                     sessionUpdateDTO.Occupancy = model.Occupancy;
 
                     context.SaveChanges();
                 }
+            }
 
-                return RedirectToAction("Index");
+            return sessionId;
+        }
+
+
+
+        public bool UpdatePresentersForSession(int sessionId, List<EditSessionPresenter> presenters)
+        {
+            // validate
+            if (presenters == null || presenters.Count() <= 0) { return false; }
+
+            using (WSADDbContext context = new WSADDbContext())
+            {
+                // get old values
+                List<WSAD_Project.Models.Data.PresenterSession> dbPresenterList = context.PresenterSessions
+                    .Where(x => x.SessionId == sessionId)
+                    .ToList();
+
+                // update database with changes 
+                if (dbPresenterList != null)
+                {
+                    // transfer changes to DTO
+                    for (int i = 0; i < presenters.Count(); i++)
+                    {
+                        int presenterId = presenters[i].PresenterId;
+                        WSAD_Project.Models.Data.PresenterSession presenterDTO = dbPresenterList.FirstOrDefault(x => x.UserId == presenterId);
+
+                        // remove presenter from session
+                        if (presenterDTO != null && presenters[i].RemovePresenter == true)
+                        {
+                            context.PresenterSessions.Remove(presenterDTO);
+                        }
+                        // add presenter to session
+                        else if (presenterDTO == null && presenters[i].AddPresenter == true)
+                        {
+                            context.PresenterSessions.Add(new PresenterSession()
+                            {
+                                SessionId = sessionId,
+                                UserId = presenterId,
+                                CreateDate = DateTime.Now
+                            });
+                        }
+                    }
+
+                }
+
+                context.SaveChanges();
+                return true;
             }
         }
 

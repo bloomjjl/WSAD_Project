@@ -27,6 +27,7 @@ namespace WSAD_Project.Models.ViewModels.Account
         public string UserName { get; set; }
 
         [Display(Name = "Date Created")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM/dd/yyyy h:mm tt}")]
         public DateTime DateCreated { get; set; }
 
         [Display(Name = "Admin")]

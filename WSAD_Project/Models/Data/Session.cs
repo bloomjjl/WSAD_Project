@@ -21,7 +21,8 @@ namespace WSAD_Project.Models.Data
 
         public string Room { get; set; }
 
-        public DateTime Time { get; set; }
+        [Column("Time")]
+        public DateTime StartDateTime { get; set; }
 
         public int Occupancy { get; set; }
 

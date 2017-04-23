@@ -279,8 +279,9 @@ namespace WSAD_Project.Controllers
                 if (sessionDTO == null) { return Redirect("Schedule"); }
 
                 int remainingSeats = GetAvailableSeatsForSessionFromDatabase(sessionDTO);
+                List<string> presenterNames = GetListOfPresenterNamesForSessionFromDatabase(sessionDTO);
 
-                return View(new ScheduledSessionDetailsViewModel(sessionDTO, remainingSeats));
+                return View(new ScheduledSessionDetailsViewModel(sessionDTO, remainingSeats, presenterNames));
             }
         }
 

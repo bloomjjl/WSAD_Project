@@ -16,7 +16,7 @@
                 $sessionsList.empty();
                 $sessionsList.hide();
 
-                if ($shoppingCartSessionSearch.val() != null && $shoppingCartSessionSearch.val() != "")
+                if ($shoppingCartSessionSearch.val() !== null && $shoppingCartSessionSearch.val() !== "")
                 {
                     // display new list
                     $.each(sessions, function (i, session) {

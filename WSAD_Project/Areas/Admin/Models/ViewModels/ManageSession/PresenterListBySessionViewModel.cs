@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 using WSAD_Project.Models.Data;
@@ -28,6 +29,7 @@ namespace WSAD_Project.Areas.Admin.Models.ViewModels.ManageSession
         public string UserName { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM/dd/yyyy h:mm}")]
         public DateTime DateRegistered { get; set; }
     }
 

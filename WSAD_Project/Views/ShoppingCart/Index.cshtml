@@ -49,6 +49,12 @@
             <th>
                 Title
             </th>
+            <th>
+                Date/Time
+            </th>
+            <th>
+                Available Seats
+            </th>
             <th></th>
         </tr>
 
@@ -63,6 +69,12 @@
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Session.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Session.StartDateTime)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Session.RemainingSeats)
                 </td>
                 <td>
                     @Html.ActionLink("Delete", "Delete", "ShoppingCart", new { shoppingCartId = item.ShoppingCartId }, null)
