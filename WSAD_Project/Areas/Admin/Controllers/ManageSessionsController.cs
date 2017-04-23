@@ -98,9 +98,9 @@ namespace WSAD_Project.Areas.Admin.Controllers
         [HttpGet]
         public ActionResult Edit(int? sessionId = 0)
         {
+            // validate parameter
             int intSessionId = ValidateAndGetNullableIntegerAsInteger(sessionId);
-
-            // Get session information for session ID
+            if (intSessionId <= 0) { return RedirectToAction("Index"); }
 
             // setup a DbContext
             EditManageSessionViewModel sessionVM;
@@ -131,34 +131,8 @@ namespace WSAD_Project.Areas.Admin.Controllers
                         });
                     }
 
-
                     // transfer information to ViewModel
                     sessionVM = new EditManageSessionViewModel(sessionDTO, sessionPresenters);
-
-                    /*
-                    // get list of presenters for session
-                    int sessionID = sessionDTO.Id;
-                    List<WSAD_Project.Models.Data.PresenterSession> presenterSessionsDTO = context.PresenterSessions
-                        .Include("User")
-                        .Where(x => x.SessionId == sessionDTO.Id)
-                        .ToList();
-
-                    if (presenterSessionsDTO != null)
-                    {
-                        sessionVM.Presenters = new List<Presenter>();
-
-                        for (int i = 0; i < presenterSessionsDTO.Count(); i++)
-                        {
-                            sessionVM.Presenters.Add(new Presenter()
-                            {
-                                PresenterUserId = presenterSessionsDTO[i].UserId,
-                                PresenterUserName = presenterSessionsDTO[i].User.Username,
-                                ToAdd = false,
-                                ToRemove = false
-                            });
-                        }
-                    }
-                    */
                 }
 
                 return View(sessionVM);
@@ -204,12 +178,27 @@ namespace WSAD_Project.Areas.Admin.Controllers
         {
             // validate parameters
             if (!ModelState.IsValid) { return View(model); }
+            int intSessionId = ValidateAndGetNullableIntegerAsInteger(model.Id);
+            if (intSessionId <= 0) { return RedirectToAction("Index"); }
 
-            // Do the update
-            int sessionId = UpdateSessionWithChanges(model);
-            if (sessionId > 0 )
+            using (WSADDbContext context = new WSADDbContext())
             {
-                UpdatePresentersForSession(sessionId, model.Presenters);
+                // get old values
+                WSAD_Project.Models.Data.Session sessionUpdateDTO = context.Sessions.FirstOrDefault(x => x.Id == intSessionId);
+
+                // update database with changes 
+                if (sessionUpdateDTO != null)
+                {
+                    // transfer changes to DTO
+                    sessionUpdateDTO.Title = model.Title;
+                    sessionUpdateDTO.Description = model.Description;
+                    sessionUpdateDTO.Address = model.Address;
+                    sessionUpdateDTO.Room = model.Room;
+                    sessionUpdateDTO.StartDateTime = model.StartDateTime;
+                    sessionUpdateDTO.Occupancy = model.Occupancy;
+
+                    context.SaveChanges();
+                }
             }
 
             return RedirectToAction("Index");
