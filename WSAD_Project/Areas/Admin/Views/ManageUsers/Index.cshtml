@@ -8,6 +8,14 @@
     Manage Users
 </p>
 
+@if (TempData["ManageUsersMessage"] != null && TempData["ManageUsersMessage"].ToString() != string.Empty)
+{
+    <div class="alert alert-danger">
+        <span class="glyphicon glyphicon-remove-circle"></span>
+        PROBLEM: @TempData["ManageUsersMessage"].ToString()
+    </div>
+}
+
 @using (Html.BeginForm("Delete", "ManageUsers"))
 {
     @Html.AntiForgeryToken()

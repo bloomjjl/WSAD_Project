@@ -8,6 +8,13 @@
     Manage Sessions
 </p>
 
+@if (TempData["ManageSessionsMessage"] != null && TempData["ManageSessionsMessage"].ToString() != string.Empty)
+{
+    <div class="alert alert-danger">
+        <span class="glyphicon glyphicon-remove-circle"></span>
+        PROBLEM: @TempData["ManageSessionsMessage"].ToString()
+    </div>
+}
 
 @using (Html.BeginForm("Delete", "ManageSessions"))
 {

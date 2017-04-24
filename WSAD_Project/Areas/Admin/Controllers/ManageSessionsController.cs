@@ -31,8 +31,18 @@ namespace WSAD_Project.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Delete (List<ManageSessionsViewModel> collectionOfSessions)
         {
+            // validate parameters
+            if (collectionOfSessions == null) { return RedirectToAction("Index"); }
+
             // Filter collectionOfUsers to Find the Selected Items only
-            var vmItemsToDelete = collectionOfSessions.Where(x => x.IsSelected == true);
+            var vmItemsToDelete = collectionOfSessions.Where(x => x.IsSelected == true).ToList();
+
+            // stop if no sessions have been selected
+            if (vmItemsToDelete.Count == 0)
+            {
+                TempData["ManageSessionsMessage"] = "NO SESSIONS SELECTED";
+                return RedirectToAction("Index");
+            }
 
             // Do the Delete
             using (WSADDbContext context = new WSADDbContext())

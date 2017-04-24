@@ -40,8 +40,19 @@ namespace WSAD_Project.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Delete(List<ManageUserViewModel> collectionOfUsers)
         {
+            // validate parameters
+            if (collectionOfUsers == null) { return RedirectToAction("Index"); }
+
             // Filter collectionOfUsers to Find the Selected Items only
-            var vmItemsToDelete = collectionOfUsers.Where(x => x.IsSelected == true);
+            var vmItemsToDelete = collectionOfUsers.Where(x => x.IsSelected == true).ToList();
+
+            // stop if no users have been selected
+            if (vmItemsToDelete.Count == 0)
+            {
+                TempData["ManageUsersMessage"] = "NO USERS SELECTED";
+                return RedirectToAction("Index");
+            }
+
 
             // Do the Delete
             using (WSADDbContext context = new WSADDbContext())
