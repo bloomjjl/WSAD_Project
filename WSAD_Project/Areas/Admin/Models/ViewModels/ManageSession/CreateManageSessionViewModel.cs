@@ -25,6 +25,7 @@ namespace WSAD_Project.Areas.Admin.Models.ViewModels.ManageSession
         public int Id { get; set; }
 
         [Required]
+        [Display(Name = "Session Title")]
         public string Title { get; set; }
 
         [Required]

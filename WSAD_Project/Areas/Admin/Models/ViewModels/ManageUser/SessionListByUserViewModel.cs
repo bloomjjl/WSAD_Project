@@ -30,7 +30,10 @@ namespace WSAD_Project.Areas.Admin.Models.ViewModels.ManageUser
     public class UserSessionItem
     {
         public int SessionId { get; set; }
+
+        [Display(Name = "Session Title")]
         public string SessionTitle { get; set; }
+
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM/dd/yyyy h:mm tt}")]
         public DateTime DateRegistered { get; set; }
     }

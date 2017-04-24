@@ -27,14 +27,24 @@ namespace WSAD_Project.Areas.Admin.Models.ViewModels.ManageSession
         }
 
         public int SessionId { get; set; }
+
+        [Display(Name = "Session Title")]
         public string Title { get; set; }
+
         public string Description { get; set; }
+
         public string Address { get; set; }
+
         public string Room { get; set; }
+
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM/dd/yyyy h:mm tt}")]
         public DateTime StartDateTime { get; set; }
+
         public int Occupancy { get; set; }
+
+        [Display(Name = "Available")]
         public int RemainingSeats { get; set; }
+
         public bool IsSelected { get; set; }
     }
 }
