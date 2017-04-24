@@ -30,6 +30,9 @@
             <th>
                 Date/Time
             </th>
+            <th>
+                Available/Capacity
+            </th>
             <th></th>
         </tr>
 
@@ -47,6 +50,9 @@
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => session.StartDateTime)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => session.RemainingSeats) / @Html.DisplayFor(modelItem => session.Occupancy)
                 </td>
                 <td>
                     @Html.ActionLink("Edit", "Edit", "ManageSessions", new { area = "Admin", sessionId = session.SessionId }, null) <br />

@@ -50,7 +50,7 @@
                 Date/Time
             </th>
             <th>
-                Available Seats
+                Available/Capacity
             </th>
             <th></th>
         </tr>
@@ -70,7 +70,7 @@
                     @Html.DisplayFor(modelItem => item.StartDateTime)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.RemainingSeats)
+                    @Html.DisplayFor(modelItem => item.RemainingSeats) / @Html.DisplayFor(modelItem => item.Occupancy)
                 </td>
                 <td>
                     @Html.ActionLink("Details", "Details", "Session", new { id = item.Id }, null)
