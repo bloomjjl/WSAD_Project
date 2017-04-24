@@ -43,6 +43,7 @@ namespace WSAD_Project.Areas.Admin.Models.ViewModels.ManageSession
         public DateTime StartDateTime { get; set; }
 
         [Required]
+        [Display(Name = "Capacity")]
         [Range(1, Int32.MaxValue, ErrorMessage = "Please enter a number greater than zero.")]
         public int Occupancy { get; set; }
     }

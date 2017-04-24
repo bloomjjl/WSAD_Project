@@ -40,8 +40,10 @@ namespace WSAD_Project.Models.ViewModels.Session
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM/dd/yyyy h:mm tt}")]
         public DateTime StartDateTime { get; set; }
 
+        [Display(Name = "Capacity")]
         public int Occupancy { get; set; }
 
+        [Display(Name = "Available")]
         public int RemainingSeats { get; set; }
 
         public bool IsSelected { get; set; }

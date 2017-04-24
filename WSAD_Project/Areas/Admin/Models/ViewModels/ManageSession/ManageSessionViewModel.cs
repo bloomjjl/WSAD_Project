@@ -40,6 +40,7 @@ namespace WSAD_Project.Areas.Admin.Models.ViewModels.ManageSession
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM/dd/yyyy h:mm tt}")]
         public DateTime StartDateTime { get; set; }
 
+        [Display(Name = "Capacity")]
         public int Occupancy { get; set; }
 
         [Display(Name = "Available")]

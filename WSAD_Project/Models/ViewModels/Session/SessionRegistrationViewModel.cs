@@ -26,13 +26,21 @@ namespace WSAD_Project.Models.ViewModels.Session
         }
 
         public int Id { get; set; }
+
         public string Title { get; set; }
+
         public string Description { get; set; }
+
         public string Address { get; set; }
+
         public string Room { get; set; }
+
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM/dd/yyyy h:mm tt}")]
         public DateTime StartDateTime { get; set; }
+
+        [Display(Name = "Capacity")]
         public int Occupancy { get; set; }
+
         public bool IsSelected { get; set; }
 
         public bool DatabaseUpdated { get; set; }
