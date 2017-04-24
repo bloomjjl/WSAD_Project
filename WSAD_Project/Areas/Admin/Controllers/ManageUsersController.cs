@@ -43,32 +43,104 @@ namespace WSAD_Project.Areas.Admin.Controllers
             // validate parameters
             if (collectionOfUsers == null) { return RedirectToAction("Index"); }
 
-            // Filter collectionOfUsers to Find the Selected Items only
-            var vmItemsToDelete = collectionOfUsers.Where(x => x.IsSelected == true).ToList();
+            // Filter collectionOfUsers to Find the Selected Users only
+            List<ManageUserViewModel> vmUsersToDelete = collectionOfUsers.Where(x => x.IsSelected == true).ToList();
 
             // stop if no users have been selected
-            if (vmItemsToDelete.Count == 0)
+            if (vmUsersToDelete.Count == 0)
             {
                 TempData["ManageUsersMessage"] = "NO USERS SELECTED";
                 return RedirectToAction("Index");
             }
 
+            // check and remove user(s) who are presenting for any sessions
+            RemoveUsersWithPresentingSessionsFromDatabase(vmUsersToDelete);
 
-            // Do the Delete
-            using (WSADDbContext context = new WSADDbContext())
-            {
-                // Loop through ViewModel Items to Delete
-                foreach (var vmItems in vmItemsToDelete)
-                {
-                    var dtoToDelete = context.Users.FirstOrDefault(row => row.Id == vmItems.Id);
-                    context.Users.Remove(dtoToDelete);
-                }
+            // check and remove user(s) who are registered for any sessions
+            RemoveUsersWithRegisteredSessionsFromDatabase(vmUsersToDelete);
 
-                context.SaveChanges();
-            }
+            // remove user(s) profile from database
+            RemoveUsersFromDatabase(vmUsersToDelete);
 
             return RedirectToAction("Index");
         }
+
+
+
+
+        public void RemoveUsersWithPresentingSessionsFromDatabase(List<ManageUserViewModel> vmUsersToDelete)
+        {
+            // validate parameters
+            if (vmUsersToDelete == null || vmUsersToDelete.Count() <= 0) { return; }
+
+            using (WSADDbContext context = new WSADDbContext())
+            {
+                // check and remove user(s) who are presenting for any sessions
+                foreach (var vmUser in vmUsersToDelete)
+                {
+                    List<PresenterSession> dtoPresentersToDelete = context.PresenterSessions.Where(x => x.UserId == vmUser.Id).ToList();
+                    if (dtoPresentersToDelete != null)
+                    {
+                        for (int i = 0; i < dtoPresentersToDelete.Count(); i++)
+                        {
+                            context.PresenterSessions.Remove(dtoPresentersToDelete[i]);
+                        }
+                    }
+                }
+
+                // update database
+                context.SaveChanges();
+            }
+        }
+
+
+
+        public void RemoveUsersWithRegisteredSessionsFromDatabase(List<ManageUserViewModel> vmUsersToDelete)
+        {
+            // validate parameters
+            if (vmUsersToDelete == null || vmUsersToDelete.Count() <= 0) { return; }
+
+            using (WSADDbContext context = new WSADDbContext())
+            {
+                // check and remove user(s) who are registered for any sessions
+                foreach (var vmUser in vmUsersToDelete)
+                {
+                    List<UserSession> dtoUserSessionsToDelete = context.UserSessions.Where(x => x.UserId == vmUser.Id).ToList();
+                    if (dtoUserSessionsToDelete != null)
+                    {
+                        for (int i = 0; i < dtoUserSessionsToDelete.Count(); i++)
+                        {
+                            context.UserSessions.Remove(dtoUserSessionsToDelete[i]);
+                        }
+                    }
+                }
+
+                // update database
+                context.SaveChanges();
+            }
+        }
+
+
+
+        public void RemoveUsersFromDatabase(List<ManageUserViewModel> vmUsersToDelete)
+        {
+            // validate parameters
+            if (vmUsersToDelete == null || vmUsersToDelete.Count() <= 0) { return; }
+
+            using (WSADDbContext context = new WSADDbContext())
+            {
+                // remove user(s) from database
+                foreach (var vmUser in vmUsersToDelete)
+                {
+                    var dtoUserToDelete = context.Users.FirstOrDefault(row => row.Id == vmUser.Id);
+                    context.Users.Remove(dtoUserToDelete);
+                }
+
+                // update database
+                context.SaveChanges();
+            }
+        }
+
 
 
         [HttpGet]

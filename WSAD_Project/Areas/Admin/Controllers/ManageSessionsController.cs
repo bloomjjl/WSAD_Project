@@ -34,31 +34,103 @@ namespace WSAD_Project.Areas.Admin.Controllers
             // validate parameters
             if (collectionOfSessions == null) { return RedirectToAction("Index"); }
 
-            // Filter collectionOfUsers to Find the Selected Items only
-            var vmItemsToDelete = collectionOfSessions.Where(x => x.IsSelected == true).ToList();
+            // Filter collectionOfSessions to Find the Selected Sessions only
+            var vmSessionsToDelete = collectionOfSessions.Where(x => x.IsSelected == true).ToList();
 
             // stop if no sessions have been selected
-            if (vmItemsToDelete.Count == 0)
+            if (vmSessionsToDelete.Count == 0)
             {
                 TempData["ManageSessionsMessage"] = "NO SESSIONS SELECTED";
                 return RedirectToAction("Index");
             }
 
-            // Do the Delete
-            using (WSADDbContext context = new WSADDbContext())
-            {
-                // Loop through ViewModel Items to Delete
-                foreach (var vmItems in vmItemsToDelete)
-                {
-                    Session dtoToDelete = context.Sessions.FirstOrDefault(row => row.Id == vmItems.SessionId);
-                    context.Sessions.Remove(dtoToDelete);
-                }
+            // check and remove sessions(s) with users presenting 
+            RemoveSessionsWithPresentersFromDatabase(vmSessionsToDelete);
 
-                context.SaveChanges();
-            }
+            // check and remove session(s) with users registered 
+            RemoveSessionWithRegisteredUsersFromDatabase(vmSessionsToDelete);
+
+            // remove sessions(s) profile from database
+            RemoveSessionsFromDatabase(vmSessionsToDelete);
 
             return RedirectToAction("Index");
         }
+
+
+
+        public void RemoveSessionsWithPresentersFromDatabase(List<ManageSessionsViewModel> vmSessionsToDelete)
+        {
+            // validate parameters
+            if (vmSessionsToDelete == null || vmSessionsToDelete.Count() <= 0) { return; }
+
+            using (WSADDbContext context = new WSADDbContext())
+            {
+                // check and remove session(s) with users presenting 
+                foreach (var vmSession in vmSessionsToDelete)
+                {
+                    List<PresenterSession> dtoPresenterSessionsToDelete = context.PresenterSessions.Where(x => x.SessionId == vmSession.SessionId).ToList();
+                    if (dtoPresenterSessionsToDelete != null)
+                    {
+                        for (int i = 0; i < dtoPresenterSessionsToDelete.Count(); i++)
+                        {
+                            context.PresenterSessions.Remove(dtoPresenterSessionsToDelete[i]);
+                        }
+                    }
+                }
+
+                // update database
+                context.SaveChanges();
+            }
+        }
+
+
+
+        public void RemoveSessionWithRegisteredUsersFromDatabase(List<ManageSessionsViewModel> vmSessionsToDelete)
+        {
+            // validate parameters
+            if (vmSessionsToDelete == null || vmSessionsToDelete.Count() <= 0) { return; }
+
+            using (WSADDbContext context = new WSADDbContext())
+            {
+                // check and remove session(s) with registered users
+                foreach (var vmSession in vmSessionsToDelete)
+                {
+                    List<UserSession> dtoUserSessionsToDelete = context.UserSessions.Where(x => x.SessionId == vmSession.SessionId).ToList();
+                    if (dtoUserSessionsToDelete != null)
+                    {
+                        for (int i = 0; i < dtoUserSessionsToDelete.Count(); i++)
+                        {
+                            context.UserSessions.Remove(dtoUserSessionsToDelete[i]);
+                        }
+                    }
+                }
+
+                // update database
+                context.SaveChanges();
+            }
+        }
+
+
+
+        public void RemoveSessionsFromDatabase(List<ManageSessionsViewModel> vmSessionsToDelete)
+        {
+            // validate parameters
+            if (vmSessionsToDelete == null || vmSessionsToDelete.Count() <= 0) { return; }
+
+            using (WSADDbContext context = new WSADDbContext())
+            {
+                // Loop through ViewModel Items to Delete
+                foreach (var vmSession in vmSessionsToDelete)
+                {
+                    Session dtoSessionToDelete = context.Sessions.FirstOrDefault(row => row.Id == vmSession.SessionId);
+                    context.Sessions.Remove(dtoSessionToDelete);
+                }
+
+                // update database
+                context.SaveChanges();
+            }
+        }
+
 
 
 
